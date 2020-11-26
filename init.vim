@@ -1,7 +1,7 @@
 "------------------------------------------------------------------------"
 "|  ___  ________   ___  _________    ___      ___  ___   ______ _____  |"
-"| |\  \|\   ___  \|\  \|\___   ___\ |\  \    /  / /  /|/   _  / _   /| |"
-"| \ \  \ \  \\ \  \ \  \|___ \  \_| \ \  \  /  /|/  / /  / /__///  / / |"
+"| |\  \|\   ___  \|\  \|\___   ___\ |\  \    /  /|/  /|/   _  / _   /| |"
+"| \ \  \ \  \\ \  \ \  \|___ \  \_| \ \  \  /  / /  / /  / /__///  / / |"
 "|  \ \  \ \  \\ \  \ \  \   \ \  \   \ \  \/  / /  / /  / |__|//  / /  |"
 "|   \ \  \ \  \\ \  \ \  \   \ \  \ __\ \    / /  / /  / /    /  / /   |"
 "|    \ \__\ \__\\ \__\ \__\   \ \__\\__\ \__/ /__/ /__/ /    /__/ /    |"
@@ -115,6 +115,7 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
 
 " --- For vimtex ---
 let g:tex_flavor='latex'
+let g:vimtex_compiler_progname = 'nvr'
 let g:vimtex_quickfix_mode=0
 let g:tex_conceal='abdmg'
 let g:vimtex_view_general_viewer = 'SumatraPDF' 
@@ -143,6 +144,9 @@ endif
 " Colorscheme
 colorscheme codedark
 set background=dark
+
+" --- Disable Python indent defaults ---
+let g:python_recommended_style = 0
 
 " --- Global settings ---
 syntax on
@@ -179,25 +183,12 @@ set omnifunc=syntaxcomplete#Complete
 set complete+=kspell
 set completeopt=menuone,longest
 
-" --- Set guioptions ---"
-"set guioptions+='a'
-"set guioptions+='d'
-"set guioptions+='i'
-"" Removing menubar/toolbar/scrollbar
-"set guioptions-=m
-"set guioptions-=T
-"set guioptions-=r
-"set guioptions-=R
-"set guioptions-=L
-"" Dark tabs
-"set guioptions='d'
-
 " --- Change guicursor ---
 "set guicursor=i:hor20-Cursor
 "set guicursor+=r:hor25-Cursor
 "set guicursor+=n-o-v-c-ci-cr-sm:block-Cursor
 set guicursor=a:block-Cursor
-set guicursor+=a:blinkwait850-blinkoff350-blinkon250-Cursor
+set guicursor+=a:blinkwait850-blinkoff300-blinkon200-Cursor
 
 " -----------------------------------------------------------------------"
 " ---------------- SOME KEYMAPS -----------------------------------------"
@@ -221,8 +212,8 @@ nnoremap <leader>wo :wincmd o<CR>
 " Split Resizing
 nnoremap <silent> <leader>+ :vertical resize +5<CR>
 nnoremap <silent> <leader>- :vertical resize -5<CR>
-nnoremap <silent> <leader>h+ :resize +2<CR>
-nnoremap <silent> <leader>h- :resize -2<CR>
+nnoremap <silent> <M-+> :resize +2<CR>
+nnoremap <silent> <M--> :resize -2<CR>
 
 " --- Navigation in Insert Mode ---
 inoremap <C-k> <C-o>gk
@@ -272,7 +263,7 @@ inoremap {<CR> {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
 
 " --- Map to terminal ---
-nnoremap <leader>b :terminal<CR>
+nnoremap <leader>b <C-w>s<C-w>j:terminal<CR>
 
 " --- Map F5 to Ctrl-] (recommended for non EN Keyboards) ---
 nnoremap <F5> <C-]><CR>
