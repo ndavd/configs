@@ -31,6 +31,7 @@ Plug 'majutsushi/tagbar'
 Plug 'preservim/nerdcommenter'
 Plug 'miyakogi/conoline.vim'
 Plug 'tpope/vim-surround'
+"Plug 'Yggdroot/indentLine'
 Plug 'pseewald/vim-anyfold'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-notes'
@@ -130,7 +131,7 @@ let g:UltiSnipsJumpBackwardTrigger="<C-p>"
 " ---------------- SOME SETTINGS ----------------------------------------"
 " -----------------------------------------------------------------------"
 " --- Set GUI Font ---
-set guifont=UbuntuMono\ NF:h12
+"set guifont=UbuntuMono\ NF:h12
 
 " --- Set colorscheme ---
 " For 256 color support
@@ -168,6 +169,8 @@ set colorcolumn=+1
 
 " --- Highlights ---
 highlight LineNr guibg=bg guifg=darkgrey
+highlight Cursor ctermbg=white guibg=white
+highlight iCursor ctermbg=white guibg=white
 
 " --- Set OmniCompletion on ---
 filetype plugin on
@@ -177,24 +180,24 @@ set complete+=kspell
 set completeopt=menuone,longest
 
 " --- Set guioptions ---"
-set guioptions+='a'
-set guioptions+='d'
-set guioptions+='i'
-" Removing menubar/toolbar/scrollbar
-set guioptions-=m
-set guioptions-=T
-set guioptions-=r
-set guioptions-=R
-set guioptions-=L
-" Dark tabs
-set guioptions='d'
+"set guioptions+='a'
+"set guioptions+='d'
+"set guioptions+='i'
+"" Removing menubar/toolbar/scrollbar
+"set guioptions-=m
+"set guioptions-=T
+"set guioptions-=r
+"set guioptions-=R
+"set guioptions-=L
+"" Dark tabs
+"set guioptions='d'
 
 " --- Change guicursor ---
 "set guicursor=i:hor20-Cursor
 "set guicursor+=r:hor25-Cursor
 "set guicursor+=n-o-v-c-ci-cr-sm:block-Cursor
 set guicursor=a:block-Cursor
-set guicursor+=a:blinkwait850-blinkoff350-blinkon300-Cursor
+set guicursor+=a:blinkwait850-blinkoff350-blinkon250-Cursor
 
 " -----------------------------------------------------------------------"
 " ---------------- SOME KEYMAPS -----------------------------------------"
