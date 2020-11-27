@@ -18,7 +18,7 @@
 "|    - install Exuberant Ctags                                         |"
 "|                                                                      |"
 "------------------------------------------------------------------------"
-
+"
 " -----------------------------------------------------------------------"
 " ---------------- ADD PLUGINS ------------------------------------------"
 " -----------------------------------------------------------------------"
@@ -31,7 +31,8 @@ Plug 'majutsushi/tagbar'
 Plug 'preservim/nerdcommenter'
 Plug 'miyakogi/conoline.vim'
 Plug 'tpope/vim-surround'
-"Plug 'Yggdroot/indentLine'
+Plug 'tpope/vim-sleuth'
+Plug 'Yggdroot/indentLine'
 Plug 'pseewald/vim-anyfold'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-notes'
@@ -72,9 +73,22 @@ nmap <F8> :TagbarToggle<CR>
 
 " --- For lightline ---
 set laststatus=2
+" The (sub)separator setting may not work in some terminals/devices
 let g:lightline = {
       \ 'colorscheme': 'codedark',
-      \ }
+      \ 'component': {
+      \   'percent': '%3p%% (%L)' },
+      \ 'active': {
+      \   'left': [
+      \     [ 'mode', 'paste' ],
+      \     [ 'readonly', 'filename', 'modified' ] ],
+      \   'right': [
+      \     [ 'lineinfo' ],
+      \     [ 'percent' ],
+      \     [ 'fileformat', 'fileencoding', 'filetype' ] ] },
+      \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+      \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" }
+      \  }
 
 " --- For NERDCommenter ---
 let NERDSpaceDelims=0
@@ -127,6 +141,15 @@ let g:vimtex_view_general_options_latexmk='-reuse-instance'
 let g:UltiSnipsExpandTrigger=",,"
 let g:UltiSnipsJumpForwardTrigger="<C-n>"
 let g:UltiSnipsJumpBackwardTrigger="<C-p>"
+
+" --- For vim-sleuth ---
+let g:sleuth_automatic = 0
+
+" --- For indentLine ---
+autocmd VimEnter * if bufname('%') == '' | IndentLinesDisable | endif
+let g:indentLine_char = '¦'
+let g:indentLine_enabled = 0
+nnoremap <leader>i :IndentLinesToggle<CR>
 
 " -----------------------------------------------------------------------"
 " ---------------- SOME SETTINGS ----------------------------------------"
@@ -184,9 +207,6 @@ set complete+=kspell
 set completeopt=menuone,longest
 
 " --- Change guicursor ---
-"set guicursor=i:hor20-Cursor
-"set guicursor+=r:hor25-Cursor
-"set guicursor+=n-o-v-c-ci-cr-sm:block-Cursor
 set guicursor=a:block-Cursor
 set guicursor+=a:blinkwait850-blinkoff300-blinkon200-Cursor
 
@@ -212,8 +232,8 @@ nnoremap <leader>wo :wincmd o<CR>
 " Split Resizing
 nnoremap <silent> <leader>+ :vertical resize +5<CR>
 nnoremap <silent> <leader>- :vertical resize -5<CR>
-nnoremap <silent> <M-+> :resize +2<CR>
-nnoremap <silent> <M--> :resize -2<CR>
+nnoremap <silent> <A-+> :resize +2<CR>
+nnoremap <silent> <A--> :resize -2<CR>
 
 " --- Navigation in Insert Mode ---
 inoremap <C-k> <C-o>gk

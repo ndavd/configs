@@ -75,10 +75,10 @@ window:
   #startup_mode: Windowed
 
   # Window title
-  title: Terminal
+  title: terminal
 
   # Allow terminal applications to change Alacritty's window title.
-  #dynamic_title: true
+  dynamic_title: false
 
   # Window class (Linux/BSD only):
   #class:
@@ -419,7 +419,7 @@ shell:
 #
 # Directory the shell is started in. If this is unset, or `None`, the working
 # directory of the parent process will be used.
-  working_directory: C:\Users\NunoDavid\
+  working_directory: ~
 
 # WinPTY backend (Windows only)
 #
