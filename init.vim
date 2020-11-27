@@ -77,14 +77,15 @@ set laststatus=2
 let g:lightline = {
       \ 'colorscheme': 'codedark',
       \ 'component': {
-      \   'percent': '%3p%% (%L)' },
+      \   'percent': '%3p%% (%L)',
+      \   'clock': '%{strftime("%b%d %H:%M")}'},
       \ 'active': {
       \   'left': [
       \     [ 'mode', 'paste' ],
       \     [ 'readonly', 'filename', 'modified' ] ],
       \   'right': [
-      \     [ 'lineinfo' ],
-      \     [ 'percent' ],
+      \     [ 'clock' ],
+      \     [ 'percent', 'lineinfo' ],
       \     [ 'fileformat', 'fileencoding', 'filetype' ] ] },
       \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
       \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" }
