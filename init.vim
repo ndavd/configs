@@ -18,11 +18,11 @@
 "|    - install Exuberant Ctags                                         |"
 "|                                                                      |"
 "------------------------------------------------------------------------"
-"
+
 " -----------------------------------------------------------------------"
 " ---------------- ADD PLUGINS ------------------------------------------"
 " -----------------------------------------------------------------------"
-" --- Vim-Plug ---
+" --- Vim-Plug ----------------------------------------------------------"
 call plug#begin('~/AppData/Local/nvim/autoload')
 " Plugins
 Plug 'preservim/nerdtree'
@@ -43,7 +43,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'ervandew/supertab'
 Plug 'ryanoasis/vim-devicons'
 Plug 'dhruvasagar/vim-table-mode'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'lervag/vimtex'
@@ -52,49 +52,99 @@ Plug 'tomasiser/vim-code-dark'
 Plug 'chriskempson/base16-vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'morhetz/gruvbox'
-Plug 'joshdick/onedark.vim'
-Plug 'rakr/vim-one'
 Plug 'lifepillar/vim-solarized8'
 Plug 'phanviet/vim-monokai-pro'
 Plug 'jacoborus/tender.vim'
+Plug 'ajmwagar/vim-deus'
 call plug#end()
 
 " -----------------------------------------------------------------------"
 " ---------------- PLUGIN SETTINGS --------------------------------------"
 " -----------------------------------------------------------------------"
-" --- Define mapleader for keymaps ---
+" --- Define mapleader for keymaps --------------------------------------"
 let mapleader = " "
 
-" --- For NERDTree ---
+" --- For NERDTree ------------------------------------------------------"
 map <leader>n :NERDTreeToggle<CR>
 
-" --- For Tagbar ---
+" --- For Tagbar --------------------------------------------------------"
 nmap <F8> :TagbarToggle<CR>
 
-" --- For lightline ---
+" --- For lightline -----------------------------------------------------"
 set laststatus=2
+"call timer_start(1000, {->execute('redrawstatus')}, {'repeat': -1})
 " The (sub)separator setting may not work in some terminals/devices
+" strftime() may not be available in some systems
 let g:lightline = {
       \ 'colorscheme': 'codedark',
       \ 'component': {
-      \   'percent': '%3p%% (%L)',
-      \   'clock': '%{strftime("%b%d %H:%M")}'},
+      \   'percentwtot': '%3p%% (%L)',
+      \   'charvaluehex': '0x%B',
+      \   'clock': '%{strftime("%b%d %H:%M")}' },
       \ 'active': {
       \   'left': [
       \     [ 'mode', 'paste' ],
       \     [ 'readonly', 'filename', 'modified' ] ],
       \   'right': [
       \     [ 'clock' ],
-      \     [ 'percent', 'lineinfo' ],
+      \     [ 'percentwtot', 'lineinfo' ],
       \     [ 'fileformat', 'fileencoding', 'filetype' ] ] },
+      \ 'inactive': {
+      \   'left': [ [ 'filename' ] ],
+      \   'right': [ [],
+      \     [ 'percentwtot', 'lineinfo' ] ] },
       \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
-      \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" }
+      \ 'subseparator':  { 'left': "\ue0b1", 'right': "\ue0b3" }
       \  }
+" Made specifically to change codedark colorscheme
+let s:p = g:lightline#colorscheme#codedark#palette
+let s:clr1 = ['NONE', 'NONE'] " none
+let s:clr2 = [ '#000000', 0 ] " black
+let s:clr3 = [ '#6a9550', 2 ] " green
+let s:clr4 = [ '#c485bf', 5 ] " purple
+let s:clr5 = [ '#111111', 8 ] " grey
+let s:clr6 = [ '#d06969', 9 ] " red
+let s:clr7 = [ '#569bd5', 12] " blue
+let s:clr8 = [ '#ffffff', 15] " white
+let s:effect = 'bold'
+" messy...
+let s:p.normal.left = [[s:clr5[0], s:clr3[0], s:clr5[1], s:clr3[1], s:effect],
+      \ [s:clr3[0], s:clr2[0], s:clr3[1], s:clr2[1]]]
+let s:p.normal.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
+let s:p.normal.right = [[s:clr2[0], s:clr3[0], s:clr2[1], s:clr3[1]],
+      \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]],
+      \ [s:clr3[0], s:clr2[0], s:clr3[1], s:clr2[1]]]
+let s:p.insert.left = [[s:clr5[0], s:clr7[0], s:clr5[1], s:clr7[1], s:effect],
+      \ [s:clr7[0], s:clr2[0], s:clr7[1], s:clr2[1]]]
+let s:p.insert.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
+let s:p.insert.right = [[s:clr2[0], s:clr7[0], s:clr2[1], s:clr7[1]],
+      \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]],
+      \ [s:clr7[0], s:clr2[0], s:clr7[1], s:clr2[1]]]
+let s:p.replace.left = [[s:clr5[0], s:clr6[0], s:clr5[1], s:clr6[1], s:effect],
+      \ [s:clr6[0], s:clr2[0], s:clr6[1], s:clr2[1]]]
+let s:p.replace.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
+let s:p.replace.right = [[s:clr2[0], s:clr6[0], s:clr2[1], s:clr6[1]],
+      \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]],
+      \ [s:clr6[0], s:clr2[0], s:clr6[1], s:clr2[1]]]
+let s:p.visual.left = [[s:clr5[0], s:clr4[0], s:clr5[1], s:clr4[1], s:effect],
+      \ [s:clr4[0], s:clr2[0], s:clr4[1], s:clr2[1]]]
+let s:p.visual.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
+let s:p.visual.right = [[s:clr2[0], s:clr4[0], s:clr2[1], s:clr4[1]],
+      \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]],
+      \ [s:clr4[0], s:clr2[0], s:clr4[1], s:clr2[1]]]
+let s:p.inactive.left = [[s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]]]
+let s:p.inactive.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
+let s:p.inactive.right = [[s:clr5[0], s:clr7[0], s:clr5[1], s:clr7[1]],
+      \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]]]
+let s:p.tabline.left = [[s:clr3[0], s:clr5[0], s:clr3[1], s:clr5[1]]]
+let s:p.tabline.middle = [[s:clr3[0], s:clr1[0], s:clr3[1], s:clr1[1]]]
+let s:p.tabline.right = [[s:clr3[0], s:clr5[0], s:clr3[1], s:clr5[1]]]
+let s:p.tabline.tabsel = [[s:clr5[0], s:clr3[0], s:clr5[1], s:clr3[1]]]
 
-" --- For NERDCommenter ---
+" --- For NERDCommenter -------------------------------------------------"
 let NERDSpaceDelims=0
 
-" --- For Conoline ---
+" --- For Conoline ------------------------------------------------------"
 let g:conoline_auto_enable = 1
 let g:conoline_color_normal_dark = 'ctermbg=None'
 let g:conoline_color_insert_dark = 'ctermbg=None'
@@ -103,7 +153,7 @@ let g:conoline_color_normal_nr_dark = 'ctermbg=None ctermfg=white
 let g:conoline_color_insert_nr_dark = 'ctermbg=None ctermfg=white
       \ guifg=white'
 
-" --- For creating presentations in vim (use Goyo plugin) ---
+" --- For creating presentations in vim (use Goyo plugin) ---------------"
 autocmd BufNewFile,BufRead *.vpm call SetVimPresentationMode()
 function SetVimPresentationMode()
   set laststatus=0
@@ -114,21 +164,21 @@ function SetVimPresentationMode()
   nnoremap <buffer> <Left> :N<CR>
 endfunction
 
-" --- For vim-anyfold ---
+" --- For vim-anyfold ---------------------------------------------------"
 autocmd Filetype * AnyFoldActivate
 let g:anyfold_fold_toplevel=0
 set foldlevel=99
 
-" --- For base16 colorscheme ---
+" --- For base16 colorscheme --------------------------------------------"
 let base16colorspace=256  " Access colors present in 256 colorspace
 
-" --- For fzf ---
+" --- For fzf -----------------------------------------------------------"
 let g:fzf_layout = { 'down': '~40%' }
 
-" --- For SuperTab ---
+" --- For SuperTab ------------------------------------------------------"
 let g:SuperTabDefaultCompletionType = "<c-n>"
 
-" --- For vimtex ---
+" --- For vimtex --------------------------------------------------------"
 let g:tex_flavor='latex'
 let g:vimtex_compiler_progname = 'nvr'
 let g:vimtex_quickfix_mode=0
@@ -137,16 +187,16 @@ let g:vimtex_view_general_viewer = 'SumatraPDF'
 let g:vimtex_view_general_options='-reuse-instance -forward-search @tex @line @pdf'
 let g:vimtex_view_general_options_latexmk='-reuse-instance'
 
-" --- For UtilSnips ---
+" --- For UtilSnips -----------------------------------------------------"
 " Trigger configuration
 let g:UltiSnipsExpandTrigger=",,"
 let g:UltiSnipsJumpForwardTrigger="<C-n>"
 let g:UltiSnipsJumpBackwardTrigger="<C-p>"
 
-" --- For vim-sleuth ---
+" --- For vim-sleuth ----------------------------------------------------"
 let g:sleuth_automatic = 0
 
-" --- For indentLine ---
+" --- For indentLine ----------------------------------------------------"
 autocmd VimEnter * if bufname('%') == '' | IndentLinesDisable | endif
 let g:indentLine_char = '¦'
 let g:indentLine_enabled = 0
@@ -155,10 +205,7 @@ nnoremap <leader>i :IndentLinesToggle<CR>
 " -----------------------------------------------------------------------"
 " ---------------- SOME SETTINGS ----------------------------------------"
 " -----------------------------------------------------------------------"
-" --- Set GUI Font ---
-"set guifont=UbuntuMono\ NF:h12
-
-" --- Set colorscheme ---
+" --- Set colorscheme ---------------------------------------------------"
 " For 256 color support
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
@@ -169,10 +216,10 @@ endif
 colorscheme codedark
 set background=dark
 
-" --- Disable Python indent defaults ---
+" --- Disable Python indent defaults ------------------------------------"
 let g:python_recommended_style = 0
 
-" --- Global settings ---
+" --- Global settings ---------------------------------------------------"
 syntax on
 set nowrap
 set clipboard=unnamed
@@ -195,65 +242,71 @@ set incsearch
 set textwidth=80
 set colorcolumn=+1
 
-" --- Highlights ---
+" --- Highlights --------------------------------------------------------"
 highlight LineNr guibg=bg guifg=darkgrey
 highlight Cursor ctermbg=white guibg=white
 highlight iCursor ctermbg=white guibg=white
+highlight Normal ctermbg=NONE guibg=NONE
+highlight NonText ctermbg=NONE guibg=NONE
+highlight EndOfBuffer ctermbg=NONE guibg=NONE
+highlight ModeMsg ctermbg=NONE guibg=NONE
+highlight ErrorMsg ctermbg=NONE guibg=NONE
+highlight Directory ctermbg=NONE guibg=NONE
+highlight ColorColumn ctermbg=darkgrey guibg=#111111
 
-" --- Set OmniCompletion on ---
+" --- Set OmniCompletion on ---------------------------------------------"
 filetype plugin on
 set omnifunc=syntaxcomplete#Complete
 " Spell check
 set complete+=kspell
 set completeopt=menuone,longest
 
-" --- Change guicursor ---
+" --- Change guicursor --------------------------------------------------"
 set guicursor=a:block-Cursor
-set guicursor+=a:blinkwait850-blinkoff300-blinkon200-Cursor
 
 " -----------------------------------------------------------------------"
 " ---------------- SOME KEYMAPS -----------------------------------------"
 " -----------------------------------------------------------------------"
-" --- Write files and source vimrc ---
+" --- Write files and source vimrc --------------------------------------"
 nnoremap <leader>w :w<CR>
 nnoremap <leader>so :source ~/AppData/Local/nvim/init.vim<CR>
 
-" --- Window handling ---
+" --- Window handling ---------------------------------------------------"
 nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 nnoremap <leader>v :wincmd v<CR>
 nnoremap <leader>s :wincmd s<CR>
-nnoremap <leader>c :wincmd c<CR>
+nnoremap <leader>x :wincmd c<CR>
 nnoremap <leader>r :wincmd r<CR>
 nnoremap <leader>T :wincmd T<CR>
 nnoremap <leader>= :wincmd =<CR>
-nnoremap <leader>wo :wincmd o<CR>
+nnoremap <leader>o :wincmd o<CR>
 " Split Resizing
 nnoremap <silent> <leader>+ :vertical resize +5<CR>
 nnoremap <silent> <leader>- :vertical resize -5<CR>
 nnoremap <silent> <A-+> :resize +2<CR>
 nnoremap <silent> <A--> :resize -2<CR>
 
-" --- Navigation in Insert Mode ---
+" --- Navigation in Insert Mode -----------------------------------------"
 inoremap <C-k> <C-o>gk
 inoremap <C-h> <Left>
 inoremap <C-l> <Right>
 inoremap <C-j> <C-o>gj
 
-" --- Scroll up/down with keys ---
+" --- Scroll up/down with keys ------------------------------------------"
 nnoremap <silent><C-j> <C-e>
 nnoremap <silent><C-k> <C-y>
 " 5x FASTER
 nnoremap <silent><A-j> 5<C-e>
 nnoremap <silent><A-k> 5<C-y>
 
-" --- Scroll left/right with keys ---
+" --- Scroll left/right with keys ---------------------------------------"
 nnoremap <C-h> 3zh
 nnoremap <C-l> 3zl
 
-" --- Move lines up/down ---
+" --- Move lines up/down ------------------------------------------------"
 nnoremap <A-s> :m .+1<CR>==
 nnoremap <A-w> :m .-2<CR>==
 inoremap <A-s> <Esc>:m .+1<CR>==gi
@@ -261,20 +314,21 @@ inoremap <A-w> <Esc>:m .-2<CR>==gi
 vnoremap <A-s> :m '>+1<CR>gv=gv
 vnoremap <A-w> :m '<-2<CR>gv=gv
 
-" --- Tab handling ---
+" --- Tab handling ------------------------------------------------------"
 nnoremap <leader>tc :tabc<CR>
 nnoremap <leader>tn :tabn<CR>
 nnoremap <leader>tp :tabp<CR>
 
-" --- Map command to go to init.vim file ---
+" --- Map command to go to init.vim file --------------------------------"
 cabbrev init e ~/AppData/Local/nvim/init.vim
+cabbrev ginit e ~/AppData/Local/nvim/ginit.vim
 
-" --- Activate/Deactivate Spelllang to EN ---
+" --- Activate/Deactivate Spelllang to EN -------------------------------"
 nnoremap <leader>p :setlocal spell spelllang=en_us<CR>
 nnoremap <leader>pt :setlocal spell spelllang=pt_pt<CR>
 nnoremap <leader><S-p> :set nospell<CR>
 
-" --- Auto-closing brackets in Insert Mode ---
+" --- Auto-closing brackets in Insert Mode ------------------------------"
 inoremap " ""<left>
 inoremap ' ''<left>
 inoremap ( ()<left>
@@ -283,10 +337,10 @@ inoremap { {}<left>
 inoremap {<CR> {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
 
-" --- Map to terminal ---
+" --- Map to terminal ---------------------------------------------------"
 nnoremap <leader>b <C-w>s<C-w>j:terminal<CR>
 
-" --- Map F5 to Ctrl-] (recommended for non EN Keyboards) ---
+" --- Map F5 to Ctrl-] (recommended for non EN Keyboards) ---------------"
 nnoremap <F5> <C-]><CR>
 
 " -----------------------------------------------------------------------"
