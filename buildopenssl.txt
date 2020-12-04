@@ -1,0 +1,25 @@
+﻿ ----- Procedure -----
+
+     Requirements:
+     - MSYS2 x64 (with perl, mingw32 and make)
+     - openssl source tar gz
+
+     Commands (MSYS2 as Admin):
+     > tar xvzf openssl-1.1.1h.tar.gz (do it in bash)
+     > cd openssl-1.1.1h
+         (Only necessary if 'perl' command gives error)
+         > export PATH="/c/msys64/mingw32/bin:$PATH"
+         > export LANG=en_US.UTF-8
+         > export LANGUAGE=en_US.UTF-8
+         > export LC_ALL=en_US.UTF-8
+     > ./Configure --prefix=$PWD/dist shared mingw
+     > mingw32-make depend && mingw32-make && mingw32-make install
+
+ ----- Built library location -----
+
+     ./openssl-1.1.1h/dist
+         /bin
+         /include
+         /lib
+
+-----------------------------------------------------------------------

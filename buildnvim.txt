@@ -1,0 +1,25 @@
+ ----- Procedure -----
+
+-- open msys2 mingw32-64 as admin
+cd (...)/neovim(-nightly)
+-- install packages:
+pacman -S \
+    mingw-w64-x86_64-{gcc,libtool,cmake,make,perl,python2,pkg-config,unibilium} \
+    gperf
+
+-- build:
+mkdir .deps
+cd .deps
+cmake  -G "MinGW Makefiles" ../third-party/
+mingw32-make
+cd ..
+mkdir build
+cd build
+cmake -G "MinGW Makefiles" -DCMAKE_INSTALL_PREFIX="C:\Program Files\nvim" -DGPERF_PRG="C:\msys64\usr\bin\gperf.exe" -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+mingw32-make
+
+-- move to correct locations
+copy runtime into build\share\nvim\
+move contents of build to C:\Program Files\nvim
+
+-- run :CheckHealth 

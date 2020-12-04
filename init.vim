@@ -96,7 +96,7 @@ let g:lightline = {
       \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
       \ 'subseparator':  { 'left': "\ue0b1", 'right': "\ue0b3" }
       \  }
-" Made specifically to change codedark colorscheme
+" Made specifically to work with codedark colorscheme
 let s:p = g:lightline#colorscheme#codedark#palette
 let s:clr1 = ['NONE', 'NONE'] " none
 let s:clr2 = [ '#000000', 0 ] " black
@@ -106,30 +106,30 @@ let s:clr5 = [ '#111111', 8 ] " grey
 let s:clr6 = [ '#d06969', 9 ] " red
 let s:clr7 = [ '#569bd5', 12] " blue
 let s:clr8 = [ '#ffffff', 15] " white
-let s:effect = 'bold'
+let s:effect = ['bold','italic']
 " messy...
-let s:p.normal.left = [[s:clr5[0], s:clr3[0], s:clr5[1], s:clr3[1], s:effect],
+let s:p.normal.left = [[s:clr5[0], s:clr3[0], s:clr5[1], s:clr3[1], s:effect[0]],
       \ [s:clr3[0], s:clr2[0], s:clr3[1], s:clr2[1]]]
 let s:p.normal.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
-let s:p.normal.right = [[s:clr2[0], s:clr3[0], s:clr2[1], s:clr3[1]],
+let s:p.normal.right = [[s:clr5[0], s:clr3[0], s:clr5[1], s:clr3[1]],
       \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]],
       \ [s:clr3[0], s:clr2[0], s:clr3[1], s:clr2[1]]]
-let s:p.insert.left = [[s:clr5[0], s:clr7[0], s:clr5[1], s:clr7[1], s:effect],
+let s:p.insert.left = [[s:clr5[0], s:clr7[0], s:clr5[1], s:clr7[1], s:effect[0]],
       \ [s:clr7[0], s:clr2[0], s:clr7[1], s:clr2[1]]]
 let s:p.insert.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
-let s:p.insert.right = [[s:clr2[0], s:clr7[0], s:clr2[1], s:clr7[1]],
+let s:p.insert.right = [[s:clr5[0], s:clr7[0], s:clr5[1], s:clr7[1]],
       \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]],
       \ [s:clr7[0], s:clr2[0], s:clr7[1], s:clr2[1]]]
-let s:p.replace.left = [[s:clr5[0], s:clr6[0], s:clr5[1], s:clr6[1], s:effect],
+let s:p.replace.left = [[s:clr5[0], s:clr6[0], s:clr5[1], s:clr6[1], s:effect[0]],
       \ [s:clr6[0], s:clr2[0], s:clr6[1], s:clr2[1]]]
 let s:p.replace.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
-let s:p.replace.right = [[s:clr2[0], s:clr6[0], s:clr2[1], s:clr6[1]],
+let s:p.replace.right = [[s:clr5[0], s:clr6[0], s:clr5[1], s:clr6[1]],
       \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]],
       \ [s:clr6[0], s:clr2[0], s:clr6[1], s:clr2[1]]]
-let s:p.visual.left = [[s:clr5[0], s:clr4[0], s:clr5[1], s:clr4[1], s:effect],
+let s:p.visual.left = [[s:clr5[0], s:clr4[0], s:clr5[1], s:clr4[1], s:effect[0]],
       \ [s:clr4[0], s:clr2[0], s:clr4[1], s:clr2[1]]]
 let s:p.visual.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
-let s:p.visual.right = [[s:clr2[0], s:clr4[0], s:clr2[1], s:clr4[1]],
+let s:p.visual.right = [[s:clr5[0], s:clr4[0], s:clr5[1], s:clr4[1]],
       \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]],
       \ [s:clr4[0], s:clr2[0], s:clr4[1], s:clr2[1]]]
 let s:p.inactive.left = [[s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]]]
@@ -219,6 +219,9 @@ set background=dark
 " --- Disable Python indent defaults ------------------------------------"
 let g:python_recommended_style = 0
 
+" --- Set g:python3_host_prog -------------------------------------------"
+let g:python3_host_prog = '~/AppData/Local/Programs/Python/Python38/python.exe'
+
 " --- Global settings ---------------------------------------------------"
 syntax on
 set nowrap
@@ -250,8 +253,16 @@ highlight Normal ctermbg=NONE guibg=NONE
 highlight NonText ctermbg=NONE guibg=NONE
 highlight EndOfBuffer ctermbg=NONE guibg=NONE
 highlight ModeMsg ctermbg=NONE guibg=NONE
+highlight MoreMsg ctermbg=NONE guibg=NONE
+highlight ModeArea ctermbg=NONE guibg=NONE
 highlight ErrorMsg ctermbg=NONE guibg=NONE
+highlight Error ctermbg=NONE guibg=NONE
+highlight CocListBlackBlack ctermbg=NONE guibg=NONE
+highlight CocListHighlightedText ctermbg=NONE guibg=NONE
+highlight CocListFloating ctermbg=NONE guibg=NONE
 highlight Directory ctermbg=NONE guibg=NONE
+highlight VertSplit ctermbg=NONE guibg=NONE
+highlight SignColumn ctermbg=NONE guibg=NONE
 highlight ColorColumn ctermbg=darkgrey guibg=#111111
 
 " --- Set OmniCompletion on ---------------------------------------------"
