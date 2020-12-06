@@ -17,9 +17,4 @@ mkdir build
 cd build
 cmake -G "MinGW Makefiles" -DCMAKE_INSTALL_PREFIX="C:\Program Files\nvim" -DGPERF_PRG="C:\msys64\usr\bin\gperf.exe" -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
 mingw32-make
-
--- move to correct locations
-copy runtime into build\share\nvim\
-move contents of build to C:\Program Files\nvim
-
--- run :CheckHealth 
+mingw32-make install
