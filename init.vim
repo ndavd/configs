@@ -47,6 +47,7 @@ Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'lervag/vimtex'
+Plug 'lambdalisue/battery.vim'
 " Themes
 Plug 'tomasiser/vim-code-dark'
 Plug 'chriskempson/base16-vim'
@@ -80,7 +81,8 @@ let g:lightline = {
       \ 'component': {
       \   'percentwtot': '%3p%% (%L)',
       \   'charvaluehex': '0x%B',
-      \   'clock': '%{strftime("%b%d %H:%M")}' },
+      \   'clock': '%{strftime("%b%d %H:%M")}',
+      \   'battery': '%{battery#component()}' },
       \ 'active': {
       \   'left': [
       \     [ 'mode', 'paste' ],
@@ -140,6 +142,70 @@ let s:p.tabline.left = [[s:clr3[0], s:clr5[0], s:clr3[1], s:clr5[1]]]
 let s:p.tabline.middle = [[s:clr3[0], s:clr1[0], s:clr3[1], s:clr1[1]]]
 let s:p.tabline.right = [[s:clr3[0], s:clr5[0], s:clr3[1], s:clr5[1]]]
 let s:p.tabline.tabsel = [[s:clr5[0], s:clr3[0], s:clr5[1], s:clr3[1]]]
+
+" --- For battery.vim ---------------------------------------------------"
+let g:battery#component_format='%v%% %s'
+let g:battery#update_interval=20000
+let g:displayBattery=0
+" Change the battery icon accordingly
+function SetBatteryIcon()
+  let symbol=''
+  if battery#value() <= '10'
+    let symbol=''
+  elseif battery#value() <= '20'
+    let symbol=''
+  elseif battery#value() <= '30'
+    let symbol=''
+  elseif battery#value() <= '40'
+    let symbol=''
+  elseif battery#value() <= '50'
+    let symbol=''
+  elseif battery#value() <= '60'
+    let symbol=''
+  elseif battery#value() <= '70'
+    let symbol=''
+  elseif battery#value() <= '80'
+    let symbol=''
+  elseif battery#value() <= '90'
+    let symbol=''
+  else
+    let symbol=''
+  endif
+  if battery#is_charging()
+    let g:battery#symbol_charging=''.symbol
+  else
+    let g:battery#symbol_discharging=symbol
+  endif
+  call battery#update()
+endfunction
+" Toggle the display of the battery level in the statusline
+function ToggleDisplayBattery()
+  call SetBatteryIcon()
+  if g:displayBattery==1
+    let g:displayBattery=0
+    let g:lightline.active.right = [
+          \     [ 'clock' ],
+          \     [ 'percentwtot', 'lineinfo' ],
+          \     [ 'fileformat', 'fileencoding', 'filetype' ] ]
+  elseif g:displayBattery==0
+    let g:displayBattery=1
+    let g:lightline.active.right = [
+          \     [ 'battery', 'clock' ],
+          \     [ 'percentwtot', 'lineinfo' ],
+          \     [ 'fileformat', 'fileencoding', 'filetype' ] ]
+  endif
+  " Reload lightline
+  call lightline#disable()
+  call lightline#enable()
+endfunction
+nnoremap <silent><A-b> :call ToggleDisplayBattery()<CR>
+" Good for updating the battery icon when DisplayBattery is on
+function TriggerSetBatteryIcon(timerA)
+  if g:displayBattery==1
+    call SetBatteryIcon()
+  endif
+endfunction
+let timerA = timer_start(1000, 'TriggerSetBatteryIcon', {'repeat': -1})
 
 " --- For NERDCommenter -------------------------------------------------"
 let NERDSpaceDelims=0
