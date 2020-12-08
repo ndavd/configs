@@ -63,17 +63,16 @@ call plug#end()
 " ---------------- PLUGIN SETTINGS --------------------------------------"
 " -----------------------------------------------------------------------"
 " --- Define mapleader for keymaps --------------------------------------"
-let mapleader = " "
+let mapleader = ' '
 
 " --- For NERDTree ------------------------------------------------------"
-map <leader>n :NERDTreeToggle<CR>
+nnoremap <silent><leader>n :NERDTreeToggle<CR>
 
 " --- For Tagbar --------------------------------------------------------"
 nmap <F8> :TagbarToggle<CR>
 
 " --- For lightline -----------------------------------------------------"
 set laststatus=2
-"call timer_start(1000, {->execute('redrawstatus')}, {'repeat': -1})
 " The (sub)separator setting may not work in some terminals/devices
 " strftime() may not be available in some systems
 let g:lightline = {
@@ -81,7 +80,7 @@ let g:lightline = {
       \ 'component': {
       \   'percentwtot': '%3p%% (%L)',
       \   'charvaluehex': '0x%B',
-      \   'clock': '%{strftime("%b%d %H:%M")}',
+      \   'clock': '%{strftime("%b%d %H:%M:%S")}',
       \   'battery': '%{battery#component()}' },
       \ 'active': {
       \   'left': [
@@ -90,7 +89,7 @@ let g:lightline = {
       \   'right': [
       \     [ 'clock' ],
       \     [ 'percentwtot', 'lineinfo' ],
-      \     [ 'fileformat', 'fileencoding', 'filetype' ] ] },
+      \     [ 'fileformat', 'fileencoding' ] ] },
       \ 'inactive': {
       \   'left': [ [ 'filename' ] ],
       \   'right': [ [],
@@ -100,60 +99,82 @@ let g:lightline = {
       \  }
 " Made specifically to work with codedark colorscheme
 let s:p = g:lightline#colorscheme#codedark#palette
-let s:clr1 = ['NONE', 'NONE'] " none
-let s:clr2 = [ '#000000', 0 ] " black
-let s:clr3 = [ '#6a9550', 2 ] " green
-let s:clr4 = [ '#c485bf', 5 ] " purple
-let s:clr5 = [ '#111111', 8 ] " grey
-let s:clr6 = [ '#d06969', 9 ] " red
-let s:clr7 = [ '#569bd5', 12] " blue
-let s:clr8 = [ '#ffffff', 15] " white
+let s:c1  = ['NONE', 'NONE'] " none
+let s:c2  = [ '#000000', 0 ] " black
+let s:c3  = [ '#98c379', 2 ] " green
+let s:c4  = [ '#c678dd', 5 ] " purple
+let s:c5a = [ '#111111', 8 ] " grey
+let s:c5b = [ '#30302C', 8 ] " grey
+let s:c5c = [ '#949485', 8 ] " grey
+let s:c5d = [ '#b0b0b0', 8 ] " grey
+let s:c6  = [ '#e06b75', 9 ] " red
+let s:c7  = [ '#61afef', 12] " blue
+let s:c8  = [ '#dddddd', 15] " white
 let s:effect = ['bold','italic']
 " messy...
-let s:p.normal.left = [[s:clr5[0], s:clr3[0], s:clr5[1], s:clr3[1], s:effect[0]],
-      \ [s:clr3[0], s:clr2[0], s:clr3[1], s:clr2[1]]]
-let s:p.normal.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
-let s:p.normal.right = [[s:clr5[0], s:clr3[0], s:clr5[1], s:clr3[1]],
-      \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]],
-      \ [s:clr3[0], s:clr2[0], s:clr3[1], s:clr2[1]]]
-let s:p.insert.left = [[s:clr5[0], s:clr7[0], s:clr5[1], s:clr7[1], s:effect[0]],
-      \ [s:clr7[0], s:clr2[0], s:clr7[1], s:clr2[1]]]
-let s:p.insert.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
-let s:p.insert.right = [[s:clr5[0], s:clr7[0], s:clr5[1], s:clr7[1]],
-      \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]],
-      \ [s:clr7[0], s:clr2[0], s:clr7[1], s:clr2[1]]]
-let s:p.replace.left = [[s:clr5[0], s:clr6[0], s:clr5[1], s:clr6[1], s:effect[0]],
-      \ [s:clr6[0], s:clr2[0], s:clr6[1], s:clr2[1]]]
-let s:p.replace.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
-let s:p.replace.right = [[s:clr5[0], s:clr6[0], s:clr5[1], s:clr6[1]],
-      \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]],
-      \ [s:clr6[0], s:clr2[0], s:clr6[1], s:clr2[1]]]
-let s:p.visual.left = [[s:clr5[0], s:clr4[0], s:clr5[1], s:clr4[1], s:effect[0]],
-      \ [s:clr4[0], s:clr2[0], s:clr4[1], s:clr2[1]]]
-let s:p.visual.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
-let s:p.visual.right = [[s:clr5[0], s:clr4[0], s:clr5[1], s:clr4[1]],
-      \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]],
-      \ [s:clr4[0], s:clr2[0], s:clr4[1], s:clr2[1]]]
-let s:p.inactive.left = [[s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]]]
-let s:p.inactive.middle = [[s:clr8[0], s:clr1[0], s:clr8[1], s:clr1[1]]]
-let s:p.inactive.right = [[s:clr5[0], s:clr7[0], s:clr5[1], s:clr7[1]],
-      \ [s:clr8[0], s:clr5[0], s:clr8[1], s:clr5[1]]]
-let s:p.tabline.left = [[s:clr3[0], s:clr5[0], s:clr3[1], s:clr5[1]]]
-let s:p.tabline.middle = [[s:clr3[0], s:clr1[0], s:clr3[1], s:clr1[1]]]
-let s:p.tabline.right = [[s:clr3[0], s:clr5[0], s:clr3[1], s:clr5[1]]]
-let s:p.tabline.tabsel = [[s:clr5[0], s:clr3[0], s:clr5[1], s:clr3[1]]]
+let s:p.normal.left = [[s:c5a[0], s:c3[0], s:c5a[1], s:c3[1], s:effect[0]],
+      \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
+let s:p.normal.middle = [[s:c8[0], s:c1[0], s:c8[1], s:c1[1]]]
+let s:p.normal.right = [[s:c5a[0], s:c5c[0], s:c5a[1], s:c5c[1]],
+      \ [s:c5c[0], s:c5b[0], s:c5c[1], s:c5b[1]],
+      \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
+let s:p.insert.left = [[s:c5a[0], s:c7[0], s:c5a[1], s:c7[1], s:effect[0]],
+      \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
+let s:p.insert.middle = [[s:c8[0], s:c1[0], s:c8[1], s:c1[1]]]
+let s:p.insert.right = [[s:c5a[0], s:c5c[0], s:c5a[1], s:c5c[1]],
+      \ [s:c5c[0], s:c5b[0], s:c5c[1], s:c5b[1]],
+      \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
+let s:p.visual.left = [[s:c5a[0], s:c4[0], s:c5a[1], s:c4[1], s:effect[0]],
+      \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
+let s:p.visual.middle = [[s:c8[0], s:c1[0], s:c8[1], s:c1[1]]]
+let s:p.visual.right = [[s:c5a[0], s:c5c[0], s:c5a[1], s:c5c[1]],
+      \ [s:c5c[0], s:c5b[0], s:c5c[1], s:c5b[1]],
+      \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
+let s:p.replace.left = [[s:c5a[0], s:c6[0], s:c5a[1], s:c6[1], s:effect[0]],
+      \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
+let s:p.replace.middle = [[s:c8[0], s:c1[0], s:c8[1], s:c1[1]]]
+let s:p.replace.right = [[s:c5a[0], s:c5c[0], s:c5a[1], s:c5c[1]],
+      \ [s:c5c[0], s:c5b[0], s:c5c[1], s:c5b[1]],
+      \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
+let s:p.inactive.left = [[s:c8[0], s:c5a[0], s:c8[1], s:c5a[1]]]
+let s:p.inactive.middle = [[s:c8[0], s:c1[0], s:c8[1], s:c1[1]]]
+let s:p.inactive.right = [[s:c5d[0], s:c5d[0], s:c5d[1], s:c5d[1]],
+      \ [s:c8[0], s:c5a[0], s:c8[1], s:c5a[1]]]
+let s:p.tabline.left = [[s:c3[0], s:c5b[0], s:c3[1], s:c5b[1]]]
+let s:p.tabline.middle = [[s:c3[0], s:c1[0], s:c3[1], s:c1[1]]]
+let s:p.tabline.right = [[s:c3[0], s:c5b[0], s:c3[1], s:c5b[1]]]
+let s:p.tabline.tabsel = [[s:c5b[0], s:c3[0], s:c5b[1], s:c3[1]]]
+" Toggle the display of seconds in the statusline (you may find it distracting)
+let g:displaySeconds=1
+function ToggleDisplayClockSeconds()
+  if g:displaySeconds==1
+    let g:displaySeconds=0
+    let g:lightline.component.clock = '%{strftime("%b%d %H:%M")}'
+  else
+    let g:displaySeconds=1
+    let g:lightline.component.clock = '%{strftime("%b%d %H:%M:%S")}'
+  endif
+  " Reload lightline
+  call lightline#disable()
+  call lightline#enable()
+endfunction
+nnoremap <silent><A-t> :call ToggleDisplayClockSeconds()<CR>
 
 " --- For battery.vim ---------------------------------------------------"
 let g:battery#component_format='%v%% %s'
 let g:battery#update_interval=20000
 let g:displayBattery=0
+" Some terminals/devices may not support the following characters
+" Placeholders
+let g:battery#symbol_charging=''
+let g:battery#symbol_discharging=''
 " Change the battery icon accordingly
 function SetBatteryIcon()
   let symbol=''
-  if battery#value() <= '10'
+  let critical=0
+  if battery#value() <= '20'
+    let critical=1
     let symbol=''
-  elseif battery#value() <= '20'
-    let symbol=''
   elseif battery#value() <= '30'
     let symbol=''
   elseif battery#value() <= '40'
@@ -174,7 +195,11 @@ function SetBatteryIcon()
   if battery#is_charging()
     let g:battery#symbol_charging=''.symbol
   else
-    let g:battery#symbol_discharging=symbol
+    if critical==0
+      let g:battery#symbol_discharging=symbol
+    else
+      let g:battery#symbol_discharging='!'.symbol
+    endif
   endif
   call battery#update()
 endfunction
@@ -186,20 +211,20 @@ function ToggleDisplayBattery()
     let g:lightline.active.right = [
           \     [ 'clock' ],
           \     [ 'percentwtot', 'lineinfo' ],
-          \     [ 'fileformat', 'fileencoding', 'filetype' ] ]
+          \     [ 'fileformat', 'fileencoding' ] ]
   elseif g:displayBattery==0
     let g:displayBattery=1
     let g:lightline.active.right = [
           \     [ 'battery', 'clock' ],
           \     [ 'percentwtot', 'lineinfo' ],
-          \     [ 'fileformat', 'fileencoding', 'filetype' ] ]
+          \     [ 'fileformat', 'fileencoding' ] ]
   endif
   " Reload lightline
   call lightline#disable()
   call lightline#enable()
 endfunction
 nnoremap <silent><A-b> :call ToggleDisplayBattery()<CR>
-" Good for updating the battery icon when DisplayBattery is on
+" Update the battery icon every second when DisplayBattery is on
 function TriggerSetBatteryIcon(timerA)
   if g:displayBattery==1
     call SetBatteryIcon()
