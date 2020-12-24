@@ -15,7 +15,7 @@
 "|      ... place it into ~/AppData/Local/nvim/autoload)                |"
 "|    - place pt.utf-8.spl in ~/AppData/Local/nvim/spell                |"
 "|    - mkdir undodir in ~/AppData/Local/nvim                           |"
-"|    - install Exuberant Ctags                                         |"
+"|    - install Exuberant Ctags, sumatraPDF, cargo                      |"
 "|                                                                      |"
 "------------------------------------------------------------------------"
 
@@ -33,12 +33,14 @@ Plug 'miyakogi/conoline.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-sleuth'
 Plug 'Yggdroot/indentLine'
+Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'pseewald/vim-anyfold'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-notes'
 Plug 'tpope/vim-repeat'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'ervandew/supertab'
 Plug 'ryanoasis/vim-devicons'
@@ -48,6 +50,14 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'lervag/vimtex'
 Plug 'lambdalisue/battery.vim'
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'wfxr/minimap.vim'
+      \ , {'do': ':!cargo install --locked code-minimap'} " Requires cargo
+Plug 'jdhao/better-escape.vim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
 " Themes
 Plug 'tomasiser/vim-code-dark'
 Plug 'chriskempson/base16-vim'
@@ -71,21 +81,25 @@ nnoremap <silent><leader>n :NERDTreeToggle<CR>
 " --- For Tagbar --------------------------------------------------------"
 nmap <F8> :TagbarToggle<CR>
 
-" --- For lightline -----------------------------------------------------"
+" --- For lightline ( with devicons ) -----------------------------------"
 set laststatus=2
-" The (sub)separator setting may not work in some terminals/devices
+" The (sub)separator symbol may not work in some terminals/devices
 " strftime() may not be available in some systems
 let g:lightline = {
       \ 'colorscheme': 'codedark',
+      \ 'component_function': {
+      \   'fileformat': 'MyFileformat',
+      \   'gitbranch': 'FugitiveHead' },
       \ 'component': {
       \   'percentwtot': '%3p%% (%L)',
       \   'charvaluehex': '0x%B',
       \   'clock': '%{strftime("%b%d %H:%M:%S")}',
-      \   'battery': '%{battery#component()}' },
+      \   'battery': '%{battery#component()}',
+      \   'filename': '%{WebDevIconsGetFileTypeSymbol()} %t' },
       \ 'active': {
       \   'left': [
-      \     [ 'mode', 'paste' ],
-      \     [ 'readonly', 'filename', 'modified' ] ],
+      \     [ 'mode', 'filesymb', 'paste' ],
+      \     [ 'gitbranch', 'readonly', 'filename', 'modified' ] ],
       \   'right': [
       \     [ 'clock' ],
       \     [ 'percentwtot', 'lineinfo' ],
@@ -94,57 +108,65 @@ let g:lightline = {
       \   'left': [ [ 'filename' ] ],
       \   'right': [ [],
       \     [ 'percentwtot', 'lineinfo' ] ] },
-      \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
-      \ 'subseparator':  { 'left': "\ue0b1", 'right': "\ue0b3" }
+      \ 'tabline': {
+      \   'left': [ [ 'tabs' ] ],
+      \   'right': [] },
+      \ 'separator': { 'left': '', 'right': '' },
+      \ 'subseparator': { 'left': '', 'right': '' }
       \  }
+function MyFileformat()
+  return winwidth(0) > 70 ? (&fileformat . ' ' .
+        \ WebDevIconsGetFileFormatSymbol()) : ''
+endfunction
 " Made specifically to work with codedark colorscheme
-let s:p = g:lightline#colorscheme#codedark#palette
-let s:c1  = ['NONE', 'NONE'] " none
-let s:c2  = [ '#000000', 0 ] " black
-let s:c3  = [ '#98c379', 2 ] " green
-let s:c4  = [ '#c678dd', 5 ] " purple
-let s:c5a = [ '#111111', 8 ] " grey
-let s:c5b = [ '#30302C', 8 ] " grey
-let s:c5c = [ '#949485', 8 ] " grey
-let s:c5d = [ '#b0b0b0', 8 ] " grey
-let s:c6  = [ '#e06b75', 9 ] " red
-let s:c7  = [ '#61afef', 12] " blue
-let s:c8  = [ '#dddddd', 15] " white
-let s:effect = ['bold','italic']
+let s:p   = g:lightline#colorscheme#codedark#palette
+let s:c1  = [ 'NONE', 'NONE'  ] " none
+let s:c2  = [ '#000000', 0    ] " black
+let s:c3  = [ '#6b9956', 2    ] " green
+let s:c4  = [ '#c678dd', 5    ] " purple
+let s:c5a = [ '#111111', 8    ] " grey
+let s:c5b = [ '#303030', 8    ] " grey
+let s:c5c = [ '#949494', 8    ] " grey
+let s:c5d = [ '#b0b0b0', 8    ] " grey
+let s:c6  = [ '#e06b75', 9    ] " red
+let s:c7  = [ '#61afef', 12   ] " blue
+let s:c8  = [ '#dddddd', 15   ] " white
+let s:fx  = [ 'bold','italic' ]
 " messy...
-let s:p.normal.left = [[s:c5a[0], s:c3[0], s:c5a[1], s:c3[1], s:effect[0]],
+let s:p.normal.left = [[s:c5a[0], s:c3[0], s:c5a[1], s:c3[1], s:fx[0]],
       \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
 let s:p.normal.middle = [[s:c8[0], s:c1[0], s:c8[1], s:c1[1]]]
 let s:p.normal.right = [[s:c5a[0], s:c5c[0], s:c5a[1], s:c5c[1]],
       \ [s:c5c[0], s:c5b[0], s:c5c[1], s:c5b[1]],
       \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
-let s:p.insert.left = [[s:c5a[0], s:c7[0], s:c5a[1], s:c7[1], s:effect[0]],
+let s:p.insert.left = [[s:c5a[0], s:c7[0], s:c5a[1], s:c7[1], s:fx[0]],
       \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
 let s:p.insert.middle = [[s:c8[0], s:c1[0], s:c8[1], s:c1[1]]]
 let s:p.insert.right = [[s:c5a[0], s:c5c[0], s:c5a[1], s:c5c[1]],
       \ [s:c5c[0], s:c5b[0], s:c5c[1], s:c5b[1]],
       \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
-let s:p.visual.left = [[s:c5a[0], s:c4[0], s:c5a[1], s:c4[1], s:effect[0]],
+let s:p.visual.left = [[s:c5a[0], s:c4[0], s:c5a[1], s:c4[1], s:fx[0]],
       \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
 let s:p.visual.middle = [[s:c8[0], s:c1[0], s:c8[1], s:c1[1]]]
 let s:p.visual.right = [[s:c5a[0], s:c5c[0], s:c5a[1], s:c5c[1]],
       \ [s:c5c[0], s:c5b[0], s:c5c[1], s:c5b[1]],
       \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
-let s:p.replace.left = [[s:c5a[0], s:c6[0], s:c5a[1], s:c6[1], s:effect[0]],
+let s:p.replace.left = [[s:c5a[0], s:c6[0], s:c5a[1], s:c6[1], s:fx[0]],
       \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
 let s:p.replace.middle = [[s:c8[0], s:c1[0], s:c8[1], s:c1[1]]]
 let s:p.replace.right = [[s:c5a[0], s:c5c[0], s:c5a[1], s:c5c[1]],
       \ [s:c5c[0], s:c5b[0], s:c5c[1], s:c5b[1]],
       \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
-let s:p.inactive.left = [[s:c8[0], s:c5a[0], s:c8[1], s:c5a[1]]]
+let s:p.inactive.left = [[s:c5d[0], s:c5a[0], s:c5d[1], s:c5a[1]]]
 let s:p.inactive.middle = [[s:c8[0], s:c1[0], s:c8[1], s:c1[1]]]
 let s:p.inactive.right = [[s:c5d[0], s:c5d[0], s:c5d[1], s:c5d[1]],
-      \ [s:c8[0], s:c5a[0], s:c8[1], s:c5a[1]]]
-let s:p.tabline.left = [[s:c3[0], s:c5b[0], s:c3[1], s:c5b[1]]]
+      \ [s:c5d[0], s:c5a[0], s:c5d[1], s:c5a[1]]]
+let s:p.tabline.left = [[s:c3[0], s:c5a[0], s:c3[1], s:c5a[1]]]
 let s:p.tabline.middle = [[s:c3[0], s:c1[0], s:c3[1], s:c1[1]]]
 let s:p.tabline.right = [[s:c3[0], s:c5b[0], s:c3[1], s:c5b[1]]]
 let s:p.tabline.tabsel = [[s:c5b[0], s:c3[0], s:c5b[1], s:c3[1]]]
-" Toggle the display of seconds in the statusline (you may find it distracting)
+" Toggle the display of seconds in the statusline
+" (you may find it distracting)
 let g:displaySeconds=1
 function ToggleDisplayClockSeconds()
   if g:displaySeconds==1
@@ -158,7 +180,7 @@ function ToggleDisplayClockSeconds()
   call lightline#disable()
   call lightline#enable()
 endfunction
-nnoremap <silent><A-t> :call ToggleDisplayClockSeconds()<CR>
+cabbrev <silent> togsec call ToggleDisplayClockSeconds()
 
 " --- For battery.vim ---------------------------------------------------"
 let g:battery#component_format='%v%% %s'
@@ -170,35 +192,35 @@ let g:battery#symbol_charging=''
 let g:battery#symbol_discharging=''
 " Change the battery icon accordingly
 function SetBatteryIcon()
-  let symbol=''
-  let critical=0
+  let l:symbol=''
+  let l:critical=0
   if battery#value() <= '20'
-    let critical=1
-    let symbol=''
+    let l:critical=1
+    let l:symbol=''
   elseif battery#value() <= '30'
-    let symbol=''
+    let l:symbol=''
   elseif battery#value() <= '40'
-    let symbol=''
+    let l:symbol=''
   elseif battery#value() <= '50'
-    let symbol=''
+    let l:symbol=''
   elseif battery#value() <= '60'
-    let symbol=''
+    let l:symbol=''
   elseif battery#value() <= '70'
-    let symbol=''
+    let l:symbol=''
   elseif battery#value() <= '80'
-    let symbol=''
+    let l:symbol=''
   elseif battery#value() <= '90'
-    let symbol=''
+    let l:symbol=''
   else
-    let symbol=''
+    let l:symbol=''
   endif
   if battery#is_charging()
-    let g:battery#symbol_charging=''.symbol
+    let g:battery#symbol_charging=''.l:symbol
   else
-    if critical==0
-      let g:battery#symbol_discharging=symbol
+    if l:critical==0
+      let g:battery#symbol_discharging=l:symbol
     else
-      let g:battery#symbol_discharging='!'.symbol
+      let g:battery#symbol_discharging='!'.l:symbol
     endif
   endif
   call battery#update()
@@ -208,22 +230,16 @@ function ToggleDisplayBattery()
   call SetBatteryIcon()
   if g:displayBattery==1
     let g:displayBattery=0
-    let g:lightline.active.right = [
-          \     [ 'clock' ],
-          \     [ 'percentwtot', 'lineinfo' ],
-          \     [ 'fileformat', 'fileencoding' ] ]
+    let g:lightline.active.right[0] = [ 'clock' ]
   elseif g:displayBattery==0
     let g:displayBattery=1
-    let g:lightline.active.right = [
-          \     [ 'battery', 'clock' ],
-          \     [ 'percentwtot', 'lineinfo' ],
-          \     [ 'fileformat', 'fileencoding' ] ]
+    let g:lightline.active.right[0] = [ 'battery', 'clock' ]
   endif
   " Reload lightline
   call lightline#disable()
   call lightline#enable()
 endfunction
-nnoremap <silent><A-b> :call ToggleDisplayBattery()<CR>
+nnoremap <silent><leader>bl :call ToggleDisplayBattery()<CR>
 " Update the battery icon every second when DisplayBattery is on
 function TriggerSetBatteryIcon(timerA)
   if g:displayBattery==1
@@ -250,7 +266,6 @@ function SetVimPresentationMode()
   set laststatus=0
   hi NonText guifg=bg ctermfg=bg
   set nonu
-  DisableWhitespace
   nnoremap <buffer> <Right> :n<CR>
   nnoremap <buffer> <Left> :N<CR>
 endfunction
@@ -275,7 +290,8 @@ let g:vimtex_compiler_progname = 'nvr'
 let g:vimtex_quickfix_mode=0
 let g:tex_conceal='abdmg'
 let g:vimtex_view_general_viewer = 'SumatraPDF' 
-let g:vimtex_view_general_options='-reuse-instance -forward-search @tex @line @pdf'
+let g:vimtex_view_general_options='-reuse-instance -forward-search
+      \ @tex @line @pdf'
 let g:vimtex_view_general_options_latexmk='-reuse-instance'
 
 " --- For UtilSnips -----------------------------------------------------"
@@ -287,11 +303,53 @@ let g:UltiSnipsJumpBackwardTrigger="<C-p>"
 " --- For vim-sleuth ----------------------------------------------------"
 let g:sleuth_automatic = 0
 
-" --- For indentLine ----------------------------------------------------"
+" --- For indentLine and indentBlankLine --------------------------------"
 autocmd VimEnter * if bufname('%') == '' | IndentLinesDisable | endif
+let g:indentLine_enabled = 1
 let g:indentLine_char = '¦'
-let g:indentLine_enabled = 0
-nnoremap <leader>i :IndentLinesToggle<CR>
+let g:indentLine_leadingSpaceEnabled = 1
+let g:indentLine_leadingSpaceChar = '·'
+let g:indentLine_showFirstIndentLevel = 1
+let g:indentLine_color_gui = '#444444'
+let g:indentLine_bgcolor_gui = 'NONE'
+let g:indent_blankline_debug = v:true
+nnoremap <silent><leader>i :LeadingSpaceToggle<CR>
+      \:IndentBlanklineToggleAll<CR>
+
+" --- For gitgutter -----------------------------------------------------"
+let g:gitgutter_map_keys=0
+
+" --- For CoC -----------------------------------------------------------"
+let b:coc_diagnostic_disable = 1
+" Key map for scroll float windows/popups
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <A-f> coc#float#has_scroll() ?
+        \ coc#float#scroll(1,1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <A-b> coc#float#has_scroll() ?
+        \ coc#float#scroll(0,1) : "\<C-b>"
+  inoremap <silent><nowait><expr> <A-f> coc#float#has_scroll() ?
+        \ "\<c-r>=coc#float#scroll(1,1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <A-b> coc#float#has_scroll() ?
+        \ "\<c-r>=coc#float#scroll(0,1)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <A-f> coc#float#has_scroll() ?
+        \ coc#float#scroll(1,1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <A-b> coc#float#has_scroll() ?
+        \ coc#float#scroll(0,1) : "\<C-b>"
+endif
+
+" --- For minimap -------------------------------------------------------"
+let g:minimap_highlight = 'MinimapCurrentLine'
+let g:minimap_base_highlight = 'MinimapBg'
+let g:minimap_width = 10
+nnoremap <silent><leader>m :MinimapToggle<CR>
+
+" --- For better-escape -------------------------------------------------"
+let g:better_escape_interval = 150
+let g:better_escape_shortcut = 'jj'
+
+" --- For nvim-treesitter -----------------------------------------------"
+lua require'nvim-treesitter.configs'.setup { indent = { enable = true } }
+lua require'nvim-treesitter.configs'.setup { highlight = { enable = true } }
 
 " -----------------------------------------------------------------------"
 " ---------------- SOME SETTINGS ----------------------------------------"
@@ -311,7 +369,11 @@ set background=dark
 let g:python_recommended_style = 0
 
 " --- Set g:python3_host_prog -------------------------------------------"
-let g:python3_host_prog = '~/AppData/Local/Programs/Python/Python38/python.exe'
+let g:python3_host_prog = '~/AppData/Local/Programs/
+      \Python/Python38/python.exe'
+
+" --- Highlight lua code in vim files -----------------------------------"
+let g:vimsyn_embed = 'l'
 
 " --- Global settings ---------------------------------------------------"
 syntax on
@@ -325,7 +387,7 @@ set expandtab
 set smartindent
 set wildmenu
 set nu rnu
-set nohlsearch
+set hls
 set ignorecase
 set smartcase
 set noswapfile
@@ -335,8 +397,11 @@ set undofile
 set incsearch
 set textwidth=80
 set colorcolumn=+1
+set updatetime=300
 
 " --- Highlights --------------------------------------------------------"
+highlight MinimapCurrentLine ctermfg=darkblue guifg=#213456 guibg=NONE
+highlight MinimapBg ctermfg=darkgrey guifg=#303030 guibg=NONE
 highlight LineNr guibg=bg guifg=darkgrey
 highlight Cursor ctermbg=white guibg=white
 highlight iCursor ctermbg=white guibg=white
@@ -355,6 +420,8 @@ highlight Directory ctermbg=NONE guibg=NONE
 highlight VertSplit ctermbg=NONE guibg=NONE
 highlight SignColumn ctermbg=NONE guibg=NONE
 highlight ColorColumn ctermbg=darkgrey guibg=#111111
+highlight Visual guibg=#112436
+highlight Search guibg=#112436
 
 " --- Set OmniCompletion on ---------------------------------------------"
 filetype plugin on
@@ -366,12 +433,16 @@ set completeopt=menuone,longest
 " --- Change guicursor --------------------------------------------------"
 set guicursor=a:block-Cursor
 
+" --- Mouse options -----------------------------------------------------"
+set mouse=a
+behave xterm
+
 " -----------------------------------------------------------------------"
 " ---------------- SOME KEYMAPS -----------------------------------------"
 " -----------------------------------------------------------------------"
 " --- Write files and source vimrc --------------------------------------"
 nnoremap <leader>w :w<CR>
-nnoremap <leader>so :source ~/AppData/Local/nvim/init.vim<CR>
+nnoremap <leader>ss :source ~/AppData/Local/nvim/init.vim<CR>
 
 " --- Window handling ---------------------------------------------------"
 nnoremap <leader>h :wincmd h<CR>
@@ -417,9 +488,9 @@ vnoremap <A-s> :m '>+1<CR>gv=gv
 vnoremap <A-w> :m '<-2<CR>gv=gv
 
 " --- Tab handling ------------------------------------------------------"
-nnoremap <leader>tc :tabc<CR>
-nnoremap <leader>tn :tabn<CR>
-nnoremap <leader>tp :tabp<CR>
+nnoremap <silent><leader>tc :tabc<CR>
+nnoremap <silent><leader>tn :tabn<CR>
+nnoremap <silent><leader>tp :tabp<CR>
 
 " --- Map command to go to init.vim file --------------------------------"
 cabbrev init e ~/AppData/Local/nvim/init.vim
@@ -440,7 +511,7 @@ inoremap {<CR> {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
 
 " --- Map to terminal ---------------------------------------------------"
-nnoremap <leader>b <C-w>s<C-w>j:terminal<CR>
+nnoremap <leader>bb <C-w>s<C-w>j:terminal<CR>
 
 " --- Map F5 to Ctrl-] (recommended for non EN Keyboards) ---------------"
 nnoremap <F5> <C-]><CR>
