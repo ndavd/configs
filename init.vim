@@ -14,7 +14,7 @@
 "|    - install Vim-Plug (download plug.vim                             |"
 "|      ... place it into ~/AppData/Local/nvim/autoload)                |"
 "|    - place pt.utf-8.spl in ~/AppData/Local/nvim/spell                |"
-"|    - mkdir undodir in ~/AppData/Local/nvim                           |"
+"|    - do all the requirements for each language server                |"
 "|    - install Exuberant Ctags, sumatraPDF, cargo                      |"
 "|                                                                      |"
 "------------------------------------------------------------------------"
@@ -33,19 +33,17 @@ Plug 'miyakogi/conoline.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-sleuth'
 Plug 'Yggdroot/indentLine'
-Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'lukas-reineke/indent-blankline.nvim', { 'branch': 'lua' }
 Plug 'pseewald/vim-anyfold'
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-notes'
 Plug 'tpope/vim-repeat'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+Plug 'jiangmiao/auto-pairs'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'ervandew/supertab'
 Plug 'ryanoasis/vim-devicons'
 Plug 'dhruvasagar/vim-table-mode'
-Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'lervag/vimtex'
@@ -54,19 +52,26 @@ Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'wfxr/minimap.vim'
-      \ , {'do': ':!cargo install --locked code-minimap'} " Requires cargo
+      \, { 'do': ':!cargo install --locked code-minimap' } "Requires cargo
 Plug 'jdhao/better-escape.vim'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 Plug 'nvim-treesitter/playground'
+Plug 'Xuyuanp/scrollbar.nvim'
+Plug 'dbeniamine/cheat.sh-vim'
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/completion-nvim'
+Plug 'mfussenegger/nvim-jdtls'
 " Themes
 Plug 'tomasiser/vim-code-dark'
 Plug 'chriskempson/base16-vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'morhetz/gruvbox'
+Plug 'sainnhe/gruvbox-material'
 Plug 'lifepillar/vim-solarized8'
 Plug 'phanviet/vim-monokai-pro'
 Plug 'jacoborus/tender.vim'
 Plug 'ajmwagar/vim-deus'
+Plug 'joshdick/onedark.vim'
 call plug#end()
 
 " -----------------------------------------------------------------------"
@@ -76,6 +81,7 @@ call plug#end()
 let mapleader = ' '
 
 " --- For NERDTree ------------------------------------------------------"
+let NERDTreeMinimalUI=0
 nnoremap <silent><leader>n :NERDTreeToggle<CR>
 
 " --- For Tagbar --------------------------------------------------------"
@@ -88,14 +94,14 @@ set laststatus=2
 let g:lightline = {
       \ 'colorscheme': 'codedark',
       \ 'component_function': {
-      \   'fileformat': 'MyFileformat',
       \   'gitbranch': 'FugitiveHead' },
       \ 'component': {
-      \   'percentwtot': '%3p%% (%L)',
+      \   'percentwtot': '%2p%% (%L)',
       \   'charvaluehex': '0x%B',
-      \   'clock': '%{strftime("%b%d %H:%M:%S")}',
+      \   'clock': '%{strftime("%a %d/%m %H:%M:%S")}',
       \   'battery': '%{battery#component()}',
-      \   'filename': '%{WebDevIconsGetFileTypeSymbol()} %t' },
+      \   'fileformat': '%{&ff} %{WebDevIconsGetFileFormatSymbol()}',
+      \   'filename': '%{WebDevIconsGetFileTypeSymbol()} %t%<' },
       \ 'active': {
       \   'left': [
       \     [ 'mode', 'filesymb', 'paste' ],
@@ -108,30 +114,23 @@ let g:lightline = {
       \   'left': [ [ 'filename' ] ],
       \   'right': [ [],
       \     [ 'percentwtot', 'lineinfo' ] ] },
-      \ 'tabline': {
-      \   'left': [ [ 'tabs' ] ],
-      \   'right': [] },
       \ 'separator': { 'left': '', 'right': '' },
       \ 'subseparator': { 'left': '', 'right': '' }
       \  }
-function MyFileformat()
-  return winwidth(0) > 70 ? (&fileformat . ' ' .
-        \ WebDevIconsGetFileFormatSymbol()) : ''
-endfunction
 " Made specifically to work with codedark colorscheme
 let s:p   = g:lightline#colorscheme#codedark#palette
-let s:c1  = [ 'NONE', 'NONE'  ] " none
-let s:c2  = [ '#000000', 0    ] " black
-let s:c3  = [ '#6b9956', 2    ] " green
-let s:c4  = [ '#c678dd', 5    ] " purple
-let s:c5a = [ '#111111', 8    ] " grey
-let s:c5b = [ '#303030', 8    ] " grey
-let s:c5c = [ '#949494', 8    ] " grey
-let s:c5d = [ '#b0b0b0', 8    ] " grey
-let s:c6  = [ '#e06b75', 9    ] " red
-let s:c7  = [ '#61afef', 12   ] " blue
-let s:c8  = [ '#dddddd', 15   ] " white
-let s:fx  = [ 'bold','italic' ]
+let s:c1  = [ 'NONE', 'NONE'   ] " none
+let s:c2  = [ '#000000', 0     ] " black
+let s:c3  = [ '#6b9956', 2     ] " green
+let s:c4  = [ '#c678dd', 5     ] " purple
+let s:c5a = [ '#111111', 8     ] " grey
+let s:c5b = [ '#303030', 8     ] " grey
+let s:c5c = [ '#949494', 8     ] " grey
+let s:c5d = [ '#b0b0b0', 8     ] " grey
+let s:c6  = [ '#e06b75', 9     ] " red
+let s:c7  = [ '#61afef', 12    ] " blue
+let s:c8  = [ '#dddddd', 15    ] " white
+let s:fx  = [ 'bold', 'italic' ]
 " messy...
 let s:p.normal.left = [[s:c5a[0], s:c3[0], s:c5a[1], s:c3[1], s:fx[0]],
       \ [s:c5c[0], s:c2[0], s:c5c[1], s:c2[1]]]
@@ -163,7 +162,7 @@ let s:p.inactive.right = [[s:c5d[0], s:c5d[0], s:c5d[1], s:c5d[1]],
       \ [s:c5d[0], s:c5a[0], s:c5d[1], s:c5a[1]]]
 let s:p.tabline.left = [[s:c3[0], s:c5a[0], s:c3[1], s:c5a[1]]]
 let s:p.tabline.middle = [[s:c3[0], s:c1[0], s:c3[1], s:c1[1]]]
-let s:p.tabline.right = [[s:c3[0], s:c5b[0], s:c3[1], s:c5b[1]]]
+let s:p.tabline.right = [[s:c3[0], s:c5a[0], s:c3[1], s:c5a[1]]]
 let s:p.tabline.tabsel = [[s:c5b[0], s:c3[0], s:c5b[1], s:c3[1]]]
 " Toggle the display of seconds in the statusline
 " (you may find it distracting)
@@ -180,7 +179,36 @@ function ToggleDisplayClockSeconds()
   call lightline#disable()
   call lightline#enable()
 endfunction
-cabbrev <silent> togsec call ToggleDisplayClockSeconds()
+command ToggleSeconds call ToggleDisplayClockSeconds()
+" Automatically adjust lightline's displayed components according to the
+" width of the window
+function AdjustLightline()
+  let b:current_width = winwidth(0)
+  if b:current_width <= 60
+    let g:lightline.active.right = [ [ 'clock' ] ]
+  elseif b:current_width <= 70
+    let g:lightline.active.right = [
+          \     [ 'clock' ],
+          \     [ 'lineinfo' ] ]
+  elseif b:current_width <= 75
+    let g:lightline.active.right = [
+          \     [ 'clock' ],
+          \     [ 'percentwtot', 'lineinfo' ] ]
+  elseif b:current_width <= 79
+    let g:lightline.active.right = [
+          \     [ 'clock' ],
+          \     [ 'percentwtot', 'lineinfo' ],
+          \     [ 'fileencoding' ] ]
+  else
+    let g:lightline.active.right = [
+          \     [ 'clock' ],
+          \     [ 'percentwtot', 'lineinfo' ],
+          \     [ 'fileformat', 'fileencoding' ] ]
+  endif
+  call lightline#disable()
+  call lightline#enable()
+endfunction
+autocmd VimEnter,VimResized,WinEnter * call AdjustLightline()
 
 " --- For battery.vim ---------------------------------------------------"
 let g:battery#component_format='%v%% %s'
@@ -271,15 +299,17 @@ function SetVimPresentationMode()
 endfunction
 
 " --- For vim-anyfold ---------------------------------------------------"
-autocmd Filetype * AnyFoldActivate
 let g:anyfold_fold_toplevel=0
 set foldlevel=99
+autocmd BufWritePre *.md let b:noanyfold="true"
+if !exists('b:noanyfold')
+  if bufname(0) != ''
+    AnyFoldActivate
+  endif
+endif
 
 " --- For base16 colorscheme --------------------------------------------"
 let base16colorspace=256  " Access colors present in 256 colorspace
-
-" --- For fzf -----------------------------------------------------------"
-let g:fzf_layout = { 'down': '~40%' }
 
 " --- For SuperTab ------------------------------------------------------"
 let g:SuperTabDefaultCompletionType = "<c-n>"
@@ -307,35 +337,29 @@ let g:sleuth_automatic = 0
 autocmd VimEnter * if bufname('%') == '' | IndentLinesDisable | endif
 let g:indentLine_enabled = 1
 let g:indentLine_char = '¦'
-let g:indentLine_leadingSpaceEnabled = 1
-let g:indentLine_leadingSpaceChar = '·'
+"let g:indentLine_leadingSpaceEnabled = 1
+"let g:indentLine_leadingSpaceChar = '·'
+"let g:indent_blankline_space_char = '·'
 let g:indentLine_showFirstIndentLevel = 1
 let g:indentLine_color_gui = '#444444'
 let g:indentLine_bgcolor_gui = 'NONE'
+let g:indentLine_fileTypeExclude = ['txt']
+let g:indentLine_bufTypeExclude = ['help']
+let g:indentLine_bufNameExclude = ['term:.*']
 let g:indent_blankline_debug = v:true
-nnoremap <silent><leader>i :LeadingSpaceToggle<CR>
-      \:IndentBlanklineToggleAll<CR>
+function ToggleIndentChars()
+  "LeadingSpaceToggle
+  IndentBlanklineToggleAll
+endfunction
+nnoremap <silent><leader>i :call ToggleIndentChars()<CR>
+augroup AutogroupDisableIndentline
+  autocmd!
+  "autocmd Syntax * LeadingSpaceDisable
+  autocmd Syntax * IndentBlanklineDisableAll
+augroup END
 
 " --- For gitgutter -----------------------------------------------------"
 let g:gitgutter_map_keys=0
-
-" --- For CoC -----------------------------------------------------------"
-let b:coc_diagnostic_disable = 1
-" Key map for scroll float windows/popups
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <A-f> coc#float#has_scroll() ?
-        \ coc#float#scroll(1,1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <A-b> coc#float#has_scroll() ?
-        \ coc#float#scroll(0,1) : "\<C-b>"
-  inoremap <silent><nowait><expr> <A-f> coc#float#has_scroll() ?
-        \ "\<c-r>=coc#float#scroll(1,1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <A-b> coc#float#has_scroll() ?
-        \ "\<c-r>=coc#float#scroll(0,1)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <A-f> coc#float#has_scroll() ?
-        \ coc#float#scroll(1,1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <A-b> coc#float#has_scroll() ?
-        \ coc#float#scroll(0,1) : "\<C-b>"
-endif
 
 " --- For minimap -------------------------------------------------------"
 let g:minimap_highlight = 'MinimapCurrentLine'
@@ -345,22 +369,84 @@ nnoremap <silent><leader>m :MinimapToggle<CR>
 
 " --- For better-escape -------------------------------------------------"
 let g:better_escape_interval = 150
-let g:better_escape_shortcut = 'jj'
+let g:better_escape_shortcut = 'kk'
 
 " --- For nvim-treesitter -----------------------------------------------"
-lua require'nvim-treesitter.configs'.setup { indent = { enable = true } }
-lua require'nvim-treesitter.configs'.setup { highlight = { enable = true } }
+lua require('treesitter_config')
+
+" --- For scrollbar -----------------------------------------------------"
+" Some settings
+let g:scrollbar_right_offset = 0
+let g:scrollbar_shape = {
+      \ 'head': '█',
+      \ 'body': '█',
+      \ 'tail': '█',
+      \ }
+let g:scrollbar_highlight = {
+      \ 'head': 'Normal',
+      \ 'body': 'Normal',
+      \ 'tail': 'Normal',
+      \ }
+let g:scrollbar_excluded_filetypes = ['nerdtree', 'tagbar']
+let g:scrollbar_width = 1
+" Toggle scrollbar
+let g:activeScrollbar=0
+function ToggleScrollbar()
+  if g:activeScrollbar==0
+    let g:activeScrollbar=1
+    silent! lua require('scrollbar').show()
+    augroup Scrollbar_config
+      autocmd!
+      autocmd CursorMoved,VimResized,QuitPre *
+            \ silent! lua require('scrollbar').show()
+      autocmd WinEnter,FocusGained           *
+            \ silent! lua require('scrollbar').show()
+      autocmd WinLeave,FocusLost             *
+            \ silent! lua require('scrollbar').clear()
+    augroup END
+  else
+    let g:activeScrollbar=0
+    augroup Scrollbar_config
+      autocmd!
+      silent! lua require('scrollbar').clear()
+    augroup END
+  endif
+endfunction
+nnoremap <silent><leader>sb :call ToggleScrollbar()<CR>
+
+" --- For nvim-telescope ------------------------------------------------"
+" Load config file
+lua require('telescope_config')
+" Change cursor for TelescopePrompt
+autocmd! Filetype TelescopePrompt
+autocmd Filetype TelescopePrompt set noshowmode guicursor=a:hor20-Cursor
+      \| autocmd BufLeave <buffer> set showmode guicursor=a:block-Cursor
+" Media command ( nvim media player :D ) SOON
+"command Media lua require'telescope.builtin'.find_files{ find_command =
+      "\ {'fd', '--type', 'f', '-e', 'mp4' }, previewer = false }
+
+" --- For lspconfig -----------------------------------------------------"
+" Load config file
+lua require('lspconfig_config')
+" Format command ( for proper formatting )
+command! Format execute 'lua vim.lsp.buf.formatting()'
+
+" --- For nvim-jdtls ----------------------------------------------------"
+augroup lsp
+  au!
+  au FileType java lua require'nvimjdtls_config'
+augroup end
+
+" --- For completion.nvim -----------------------------------------------"
+" Use completion-nvim in every buffer
+autocmd BufEnter * lua require'completion'.on_attach()
 
 " -----------------------------------------------------------------------"
-" ---------------- SOME SETTINGS ----------------------------------------"
+" ---------------- NVIM SETTINGS ----------------------------------------"
 " -----------------------------------------------------------------------"
+" --- Enable 256 color support ------------------------------------------"
+set termguicolors
 " --- Set colorscheme ---------------------------------------------------"
-" For 256 color support
-if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  set termguicolors
-endif
 " Colorscheme
 colorscheme codedark
 set background=dark
@@ -372,39 +458,34 @@ let g:python_recommended_style = 0
 let g:python3_host_prog = '~/AppData/Local/Programs/
       \Python/Python38/python.exe'
 
-" --- Highlight lua code in vim files -----------------------------------"
-let g:vimsyn_embed = 'l'
+" --- Time format language ----------------------------------------------"
+language time en_us
 
 " --- Global settings ---------------------------------------------------"
-syntax on
 set nowrap
 set clipboard=unnamed
-set encoding=utf-8
 set noerrorbells
 set tabstop=2 softtabstop=2
 set shiftwidth=2
 set expandtab
 set smartindent
-set wildmenu
 set nu rnu
 set hls
 set ignorecase
 set smartcase
 set noswapfile
 set nobackup
-set undodir=~/AppData/Local/nvim/undodir
 set undofile
-set incsearch
 set textwidth=80
 set colorcolumn=+1
 set updatetime=300
+set completeopt=menuone,noinsert,noselect
+set shortmess+=c
+let g:completion_matching_strategy_list =
+      \ ['exact', 'substring', 'fuzzy', 'all']
 
 " --- Highlights --------------------------------------------------------"
-highlight MinimapCurrentLine ctermfg=darkblue guifg=#213456 guibg=NONE
-highlight MinimapBg ctermfg=darkgrey guifg=#303030 guibg=NONE
-highlight LineNr guibg=bg guifg=darkgrey
-highlight Cursor ctermbg=white guibg=white
-highlight iCursor ctermbg=white guibg=white
+" No background color for Nvim
 highlight Normal ctermbg=NONE guibg=NONE
 highlight NonText ctermbg=NONE guibg=NONE
 highlight EndOfBuffer ctermbg=NONE guibg=NONE
@@ -413,22 +494,23 @@ highlight MoreMsg ctermbg=NONE guibg=NONE
 highlight ModeArea ctermbg=NONE guibg=NONE
 highlight ErrorMsg ctermbg=NONE guibg=NONE
 highlight Error ctermbg=NONE guibg=NONE
-highlight CocListBlackBlack ctermbg=NONE guibg=NONE
-highlight CocListHighlightedText ctermbg=NONE guibg=NONE
-highlight CocListFloating ctermbg=NONE guibg=NONE
 highlight Directory ctermbg=NONE guibg=NONE
 highlight VertSplit ctermbg=NONE guibg=NONE
 highlight SignColumn ctermbg=NONE guibg=NONE
+" Number, RelNumber and Cursor
+highlight LineNr guibg=bg guifg=darkgrey
+highlight Cursor ctermbg=white guibg=white
 highlight ColorColumn ctermbg=darkgrey guibg=#111111
+" Visual and Search (for codedark theme)
 highlight Visual guibg=#112436
 highlight Search guibg=#112436
-
-" --- Set OmniCompletion on ---------------------------------------------"
-filetype plugin on
-set omnifunc=syntaxcomplete#Complete
-" Spell check
-set complete+=kspell
-set completeopt=menuone,longest
+" Minimap
+highlight MinimapCurrentLine ctermfg=darkblue guifg=#213456 guibg=NONE
+highlight MinimapBg ctermfg=darkgrey guifg=#303030 guibg=NONE
+" Telescope
+highlight TelescopeBorder guifg=#ffffff
+" Lsp
+highlight LspDiagnosticsDefaultError guibg=NONE guifg=#e03b45
 
 " --- Change guicursor --------------------------------------------------"
 set guicursor=a:block-Cursor
@@ -438,24 +520,24 @@ set mouse=a
 behave xterm
 
 " -----------------------------------------------------------------------"
-" ---------------- SOME KEYMAPS -----------------------------------------"
+" ---------------- KEYMAPS ----------------------------------------------"
 " -----------------------------------------------------------------------"
-" --- Write files and source vimrc --------------------------------------"
+" --- Write files and source init.vim -----------------------------------"
 nnoremap <leader>w :w<CR>
 nnoremap <leader>ss :source ~/AppData/Local/nvim/init.vim<CR>
 
 " --- Window handling ---------------------------------------------------"
-nnoremap <leader>h :wincmd h<CR>
-nnoremap <leader>j :wincmd j<CR>
-nnoremap <leader>k :wincmd k<CR>
-nnoremap <leader>l :wincmd l<CR>
-nnoremap <leader>v :wincmd v<CR>
-nnoremap <leader>s :wincmd s<CR>
-nnoremap <leader>x :wincmd c<CR>
-nnoremap <leader>r :wincmd r<CR>
-nnoremap <leader>T :wincmd T<CR>
-nnoremap <leader>= :wincmd =<CR>
-nnoremap <leader>o :wincmd o<CR>
+nnoremap <silent><leader>h :wincmd h<CR>
+nnoremap <silent><leader>j :wincmd j<CR>
+nnoremap <silent><leader>k :wincmd k<CR>
+nnoremap <silent><leader>l :wincmd l<CR>
+nnoremap <silent><leader>x :wincmd c<CR>
+nnoremap <silent><leader>r :wincmd r<CR>
+nnoremap <silent><leader>T :wincmd T<CR>
+nnoremap <silent><leader>= :wincmd =<CR>
+nnoremap <silent><leader>o :wincmd o<CR>
+nnoremap <silent><leader>sv :wincmd v<CR>
+nnoremap <silent><leader>sh :wincmd s<CR>
 " Split Resizing
 nnoremap <silent> <leader>+ :vertical resize +5<CR>
 nnoremap <silent> <leader>- :vertical resize -5<CR>
@@ -480,35 +562,28 @@ nnoremap <C-h> 3zh
 nnoremap <C-l> 3zl
 
 " --- Move lines up/down ------------------------------------------------"
-nnoremap <A-s> :m .+1<CR>==
-nnoremap <A-w> :m .-2<CR>==
-inoremap <A-s> <Esc>:m .+1<CR>==gi
-inoremap <A-w> <Esc>:m .-2<CR>==gi
-vnoremap <A-s> :m '>+1<CR>gv=gv
-vnoremap <A-w> :m '<-2<CR>gv=gv
+nnoremap <silent><A-s> :m .+1<CR>==
+nnoremap <silent><A-w> :m .-2<CR>==
+inoremap <silent><A-s> <Esc>:m .+1<CR>==gi
+inoremap <silent><A-w> <Esc>:m .-2<CR>==gi
+vnoremap <silent><A-s> :m '>+1<CR>gv=gv
+vnoremap <silent><A-w> :m '<-2<CR>gv=gv
 
 " --- Tab handling ------------------------------------------------------"
 nnoremap <silent><leader>tc :tabc<CR>
 nnoremap <silent><leader>tn :tabn<CR>
 nnoremap <silent><leader>tp :tabp<CR>
 
-" --- Map command to go to init.vim file --------------------------------"
-cabbrev init e ~/AppData/Local/nvim/init.vim
-cabbrev ginit e ~/AppData/Local/nvim/ginit.vim
+" --- Map command to go to init.vim file & others -----------------------"
+command Init e ~/AppData/Local/nvim/init.vim
+command Ginit e ~/AppData/Local/nvim/ginit.vim
+" Path to *_config.lua
+command CdLua cd C:/Program Files/nvim/bin/lua
 
 " --- Activate/Deactivate Spelllang to EN -------------------------------"
 nnoremap <leader>p :setlocal spell spelllang=en_us<CR>
 nnoremap <leader>pt :setlocal spell spelllang=pt_pt<CR>
 nnoremap <leader><S-p> :set nospell<CR>
-
-" --- Auto-closing brackets in Insert Mode ------------------------------"
-inoremap " ""<left>
-inoremap ' ''<left>
-inoremap ( ()<left>
-inoremap [ []<left>
-inoremap { {}<left>
-inoremap {<CR> {<CR>}<ESC>O
-inoremap {;<CR> {<CR>};<ESC>O
 
 " --- Map to terminal ---------------------------------------------------"
 nnoremap <leader>bb <C-w>s<C-w>j:terminal<CR>
