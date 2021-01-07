@@ -43,6 +43,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'ervandew/supertab'
 Plug 'ryanoasis/vim-devicons'
+Plug 'kyazdani42/nvim-web-devicons'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -51,6 +52,7 @@ Plug 'lambdalisue/battery.vim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-symbols.nvim'
 Plug 'wfxr/minimap.vim'
       \, { 'do': ':!cargo install --locked code-minimap' } "Requires cargo
 Plug 'jdhao/better-escape.vim'
@@ -98,7 +100,7 @@ let g:lightline = {
       \ 'component': {
       \   'percentwtot': '%2p%% (%L)',
       \   'charvaluehex': '0x%B',
-      \   'clock': '%{strftime("%a %d/%m %H:%M:%S")}',
+      \   'clock': '%{strftime("%a %d/%m \ %H:%M:%S")}',
       \   'battery': '%{battery#component()}',
       \   'fileformat': '%{&ff} %{WebDevIconsGetFileFormatSymbol()}',
       \   'filename': '%{WebDevIconsGetFileTypeSymbol()} %t%<' },
@@ -163,7 +165,7 @@ let s:p.inactive.right = [[s:c5d[0], s:c5d[0], s:c5d[1], s:c5d[1]],
 let s:p.tabline.left = [[s:c3[0], s:c5a[0], s:c3[1], s:c5a[1]]]
 let s:p.tabline.middle = [[s:c3[0], s:c1[0], s:c3[1], s:c1[1]]]
 let s:p.tabline.right = [[s:c3[0], s:c5a[0], s:c3[1], s:c5a[1]]]
-let s:p.tabline.tabsel = [[s:c5b[0], s:c3[0], s:c5b[1], s:c3[1]]]
+let s:p.tabline.tabsel = [[s:c5a[0], s:c3[0], s:c5a[1], s:c3[1]]]
 " Toggle the display of seconds in the statusline
 " (you may find it distracting)
 let g:displaySeconds=1
@@ -419,11 +421,11 @@ nnoremap <silent><leader>sb :call ToggleScrollbar()<CR>
 lua require('telescope_config')
 " Change cursor for TelescopePrompt
 autocmd! Filetype TelescopePrompt
-autocmd Filetype TelescopePrompt set noshowmode guicursor=a:hor20-Cursor
-      \| autocmd BufLeave <buffer> set showmode guicursor=a:block-Cursor
+autocmd Filetype TelescopePrompt set noshowmode
+      \| autocmd BufLeave <buffer> set showmode
 " Media command ( nvim media player :D ) SOON
-"command Media lua require'telescope.builtin'.find_files{ find_command =
-      "\ {'fd', '--type', 'f', '-e', 'mp4' }, previewer = false }
+command Media lua require'telescope.builtin'.find_files{ find_command =
+      \ {'fd', '--type', 'f', '-e', 'mp4' }, previewer = false }
 
 " --- For lspconfig -----------------------------------------------------"
 " Load config file
@@ -455,8 +457,8 @@ set background=dark
 let g:python_recommended_style = 0
 
 " --- Set g:python3_host_prog -------------------------------------------"
-let g:python3_host_prog = '~/AppData/Local/Programs/
-      \Python/Python38/python.exe'
+let g:python3_host_prog=
+      \'~/AppData/Local/Programs/Python/Python38/python.exe'
 
 " --- Time format language ----------------------------------------------"
 language time en_us
@@ -478,14 +480,14 @@ set nobackup
 set undofile
 set textwidth=80
 set colorcolumn=+1
-set updatetime=300
+set updatetime=100
 set completeopt=menuone,noinsert,noselect
 set shortmess+=c
 let g:completion_matching_strategy_list =
       \ ['exact', 'substring', 'fuzzy', 'all']
 
 " --- Highlights --------------------------------------------------------"
-" No background color for Nvim
+" Transparent background color for Nvim
 highlight Normal ctermbg=NONE guibg=NONE
 highlight NonText ctermbg=NONE guibg=NONE
 highlight EndOfBuffer ctermbg=NONE guibg=NONE
@@ -497,21 +499,24 @@ highlight Error ctermbg=NONE guibg=NONE
 highlight Directory ctermbg=NONE guibg=NONE
 highlight VertSplit ctermbg=NONE guibg=NONE
 highlight SignColumn ctermbg=NONE guibg=NONE
-" Number, RelNumber and Cursor
+" Number, CC, Cursor and Normal
 highlight LineNr guibg=bg guifg=darkgrey
-highlight Cursor ctermbg=white guibg=white
 highlight ColorColumn ctermbg=darkgrey guibg=#111111
-" Visual and Search (for codedark theme)
-highlight Visual guibg=#112436
-highlight Search guibg=#112436
+highlight Cursor ctermbg=white guibg=white
+" visual and search (for codedark theme)
+highlight Visual guibg=#0E1F2F
+highlight Search guibg=#0E1F2F
 " Minimap
 highlight MinimapCurrentLine ctermfg=darkblue guifg=#213456 guibg=NONE
 highlight MinimapBg ctermfg=darkgrey guifg=#303030 guibg=NONE
 " Telescope
 highlight TelescopeBorder guifg=#ffffff
 " Lsp
-highlight LspDiagnosticsDefaultError guibg=NONE guifg=#e03b45
-
+highlight LspDiagnosticsDefaultError guibg=NONE guifg=#ea6962
+highlight LspDiagnosticsVirtualTextError guibg=NONE guifg=#ea6962
+highlight LspDiagnosticsFloatingError guibg=NONE guifg=#ea6962
+highlight LspDiagnosticsSignError guibg=NONE guifg=#ea6962
+                                                  
 " --- Change guicursor --------------------------------------------------"
 set guicursor=a:block-Cursor
 
