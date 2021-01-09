@@ -29,7 +29,6 @@ Plug 'preservim/nerdtree'
 Plug 'itchyny/lightline.vim'
 Plug 'majutsushi/tagbar'
 Plug 'preservim/nerdcommenter'
-Plug 'miyakogi/conoline.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-sleuth'
 Plug 'Yggdroot/indentLine'
@@ -45,9 +44,8 @@ Plug 'ervandew/supertab'
 Plug 'ryanoasis/vim-devicons'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'dhruvasagar/vim-table-mode'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-Plug 'lervag/vimtex'
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/neosnippet-snippets'
 Plug 'lambdalisue/battery.vim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
@@ -186,7 +184,7 @@ command ToggleSeconds call ToggleDisplayClockSeconds()
 " width of the window
 function AdjustLightline()
   let b:current_width = winwidth(0)
-  if b:current_width <= 60
+  if b:current_width <= 65
     let g:lightline.active.right = [ [ 'clock' ] ]
   elseif b:current_width <= 70
     let g:lightline.active.right = [
@@ -281,15 +279,6 @@ let timerA = timer_start(1000, 'TriggerSetBatteryIcon', {'repeat': -1})
 " --- For NERDCommenter -------------------------------------------------"
 let NERDSpaceDelims=0
 
-" --- For Conoline ------------------------------------------------------"
-let g:conoline_auto_enable = 1
-let g:conoline_color_normal_dark = 'ctermbg=None'
-let g:conoline_color_insert_dark = 'ctermbg=None'
-let g:conoline_color_normal_nr_dark = 'ctermbg=None ctermfg=white
-      \ guifg=white'
-let g:conoline_color_insert_nr_dark = 'ctermbg=None ctermfg=white
-      \ guifg=white'
-
 " --- For creating presentations in vim (use Goyo plugin) ---------------"
 autocmd BufNewFile,BufRead *.vpm call SetVimPresentationMode()
 function SetVimPresentationMode()
@@ -315,22 +304,6 @@ let base16colorspace=256  " Access colors present in 256 colorspace
 
 " --- For SuperTab ------------------------------------------------------"
 let g:SuperTabDefaultCompletionType = "<c-n>"
-
-" --- For vimtex --------------------------------------------------------"
-let g:tex_flavor='latex'
-let g:vimtex_compiler_progname = 'nvr'
-let g:vimtex_quickfix_mode=0
-let g:tex_conceal='abdmg'
-let g:vimtex_view_general_viewer = 'SumatraPDF' 
-let g:vimtex_view_general_options='-reuse-instance -forward-search
-      \ @tex @line @pdf'
-let g:vimtex_view_general_options_latexmk='-reuse-instance'
-
-" --- For UtilSnips -----------------------------------------------------"
-" Trigger configuration
-let g:UltiSnipsExpandTrigger=",,"
-let g:UltiSnipsJumpForwardTrigger="<C-n>"
-let g:UltiSnipsJumpBackwardTrigger="<C-p>"
 
 " --- For vim-sleuth ----------------------------------------------------"
 let g:sleuth_automatic = 0
@@ -440,6 +413,9 @@ augroup lsp
 augroup end
 
 " --- For completion.nvim -----------------------------------------------"
+" Enable snippets
+let g:completion_enable_snippet = 'Neosnippet'
+let g:completion_confirm_key = ",,"
 " Use completion-nvim in every buffer
 autocmd BufEnter * lua require'completion'.on_attach()
 
@@ -451,6 +427,8 @@ set termguicolors
 " --- Set colorscheme ---------------------------------------------------"
 " Colorscheme
 colorscheme codedark
+
+let g:gruvbox_material_visual = 'reverse'
 set background=dark
 
 " --- Disable Python indent defaults ------------------------------------"
@@ -467,12 +445,14 @@ language time en_us
 set nowrap
 set clipboard=unnamed
 set noerrorbells
+set nocursorline
 set tabstop=2 softtabstop=2
 set shiftwidth=2
 set expandtab
 set smartindent
 set nu rnu
 set hls
+set cursorline
 set ignorecase
 set smartcase
 set noswapfile
@@ -501,6 +481,8 @@ highlight VertSplit ctermbg=NONE guibg=NONE
 highlight SignColumn ctermbg=NONE guibg=NONE
 " Number, CC, Cursor and Normal
 highlight LineNr guibg=bg guifg=darkgrey
+highlight CursorLine guibg=NONE
+highlight CursorLineNr guibg=bg guifg=white
 highlight ColorColumn ctermbg=darkgrey guibg=#111111
 highlight Cursor ctermbg=white guibg=white
 " visual and search (for codedark theme)
@@ -516,7 +498,7 @@ highlight LspDiagnosticsDefaultError guibg=NONE guifg=#ea6962
 highlight LspDiagnosticsVirtualTextError guibg=NONE guifg=#ea6962
 highlight LspDiagnosticsFloatingError guibg=NONE guifg=#ea6962
 highlight LspDiagnosticsSignError guibg=NONE guifg=#ea6962
-                                                  
+
 " --- Change guicursor --------------------------------------------------"
 set guicursor=a:block-Cursor
 
@@ -550,10 +532,10 @@ nnoremap <silent> <A-+> :resize +2<CR>
 nnoremap <silent> <A--> :resize -2<CR>
 
 " --- Navigation in Insert Mode -----------------------------------------"
-inoremap <C-k> <C-o>gk
-inoremap <C-h> <Left>
-inoremap <C-l> <Right>
-inoremap <C-j> <C-o>gj
+"inoremap <C-k> <C-o>gk
+"inoremap <C-h> <Left>
+"inoremap <C-l> <Right>
+"inoremap <C-j> <C-o>gj
 
 " --- Scroll up/down with keys ------------------------------------------"
 nnoremap <silent><C-j> <C-e>

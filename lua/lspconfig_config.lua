@@ -2,7 +2,31 @@
 require'lspconfig'.clangd.setup{}
 
 -- LaTeX
-require'lspconfig'.texlab.setup{}
+require'lspconfig'.texlab.setup{
+  settings = {
+    latex = {
+      build = {
+        args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "-pvc" },
+        forwardSearchAfter=true,
+        onSave = true
+      },
+      forwardSearch = {
+        executable = "SumatraPDF.exe",
+        args = {
+          "-reuse-instance",
+          "%p",
+          "-forward-search",
+          "%f",
+          "%l"
+        },
+        onSave=true
+      },
+    }
+  }
+}
+
+-- For Rust
+require'lspconfig'.rust_analyzer.setup{}
 
 -- Vimscript
 require'lspconfig'.vimls.setup{}
@@ -19,11 +43,33 @@ require'lspconfig'.tsserver.setup{root_dir = function() return vim.fn.getcwd() e
 -- Vue
 require'lspconfig'.vuels.setup{}
 
+-- bash
+require'lspconfig'.bashls.setup{cmd = { "bash-language-server.cmd", "start" }}
+
 -- Html
-require'lspconfig'.html.setup{}
+--Enable (broadcasting) snippet capability for completion
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+require'lspconfig'.html.setup {
+  capabilities = capabilities,
+  cmd = { "html-languageserver.cmd", "--stdio" }
+}
 
 -- Css
-require'lspconfig'.cssls.setup{}
+require'lspconfig'.cssls.setup{
+  cmd = { "css-languageserver.cmd", "--stdio" }
+}
+
+-- Json
+require'lspconfig'.jsonls.setup {
+  commands = {
+    Format = {
+      function()
+        vim.lsp.buf.range_formatting({},{0,0},{vim.fn.line("$"),0})
+      end
+    }
+  }
+}
 
 -- C#
 local pid = vim.fn.getpid()
@@ -34,9 +80,6 @@ require'lspconfig'.omnisharp.setup{
 
 -- Java
 -- using nvim-jdtls
-
--- Json
-require'lspconfig'.jsonls.setup{}
 
 -- Lua
 local system_name

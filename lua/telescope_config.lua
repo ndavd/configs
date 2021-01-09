@@ -30,7 +30,7 @@ require('telescope').setup{
     file_ignore_patterns = {},
     generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
     shorten_path = true,
-    winblend = 15,
+    winblend = 0,
     width = 0.75,
     preview_cutoff = 120,
     results_height = 1,
@@ -43,7 +43,7 @@ require('telescope').setup{
     -- default { }, currently unsupported for shells like cmd.exe / powershell.exe
     set_env = { ['COLORTERM'] = 'truecolor' },
     -- For buffer previewer use `require'telescope.previewers'.vim_buffer_cat.new`
-    file_previewer = require'telescope.previewers'.cat.new,
+    file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
     -- For buffer previewer use `require'telescope.previewers'.vim_buffer_vimgrep.new`
     grep_previewer = require'telescope.previewers'.vimgrep.new,
     -- For buffer previewer use `require'telescope.previewers'.vim_buffer_qflist.new`
@@ -53,5 +53,3 @@ require('telescope').setup{
     buffer_previewer_maker = require'telescope.previewers'.buffer_previewer_maker
   }
 }
-
-
