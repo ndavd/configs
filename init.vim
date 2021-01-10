@@ -46,6 +46,8 @@ Plug 'kyazdani42/nvim-web-devicons'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'lambdalisue/battery.vim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
@@ -72,6 +74,7 @@ Plug 'phanviet/vim-monokai-pro'
 Plug 'jacoborus/tender.vim'
 Plug 'ajmwagar/vim-deus'
 Plug 'joshdick/onedark.vim'
+Plug 'christianchiarulli/nvcode-color-schemes.vim'
 call plug#end()
 
 " -----------------------------------------------------------------------"
@@ -412,12 +415,26 @@ augroup lsp
   au FileType java lua require'nvimjdtls_config'
 augroup end
 
+" --- For vim-vsnip -----------------------------------------------------"
+" Jump forward or backward
+imap <expr> <C-k> vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<C-k>'
+smap <expr> <C-k> vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<C-k>'
+imap <expr> <C-j> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-j>'
+smap <expr> <C-j> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-j>'
+
+" --- For Neosnippet ----------------------------------------------------"
+imap <C-k> <Plug>(neosnippet_jump)
+smap <C-k> <Plug>(neosnippet_jump)
+
 " --- For completion.nvim -----------------------------------------------"
-" Enable snippets
-let g:completion_enable_snippet = 'Neosnippet'
-let g:completion_confirm_key = ",,"
 " Use completion-nvim in every buffer
 autocmd BufEnter * lua require'completion'.on_attach()
+" Enable Neosnippet snippets for html & tex
+" Use vim-vsnip for the rest
+autocmd BufEnter * if &filetype =~ 'tex\|html' |
+      \ let g:completion_enable_snippet = 'Neosnippet' | else |
+        \ let g:completion_enable_snippet = 'vim-vsnip' | endif
+let g:completion_confirm_key = ",,"
 
 " -----------------------------------------------------------------------"
 " ---------------- NVIM SETTINGS ----------------------------------------"
@@ -499,6 +516,9 @@ highlight LspDiagnosticsVirtualTextError guibg=NONE guifg=#ea6962
 highlight LspDiagnosticsFloatingError guibg=NONE guifg=#ea6962
 highlight LspDiagnosticsSignError guibg=NONE guifg=#ea6962
 
+" --- Fix syntax problems -----------------------------------------------"
+autocmd BufEnter * :syntax sync fromstart
+
 " --- Change guicursor --------------------------------------------------"
 set guicursor=a:block-Cursor
 
@@ -530,12 +550,6 @@ nnoremap <silent> <leader>+ :vertical resize +5<CR>
 nnoremap <silent> <leader>- :vertical resize -5<CR>
 nnoremap <silent> <A-+> :resize +2<CR>
 nnoremap <silent> <A--> :resize -2<CR>
-
-" --- Navigation in Insert Mode -----------------------------------------"
-"inoremap <C-k> <C-o>gk
-"inoremap <C-h> <Left>
-"inoremap <C-l> <Right>
-"inoremap <C-j> <C-o>gj
 
 " --- Scroll up/down with keys ------------------------------------------"
 nnoremap <silent><C-j> <C-e>

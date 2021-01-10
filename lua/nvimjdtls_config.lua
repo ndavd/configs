@@ -10,6 +10,11 @@
 --    -data "C:/eclipse.jdt.ls/workspace" --add-modules=ALL-SYSTEM --add-opens
 --    java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED
 
+--Enable (broadcasting) snippet capability for completion
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-require('jdtls').start_or_attach({cmd = {"java-lsp.bat"}, root_dir =
-  vim.fn.getcwd()})
+require('jdtls').start_or_attach({
+  capabilities = capabilities,
+  cmd = {"java-lsp.bat"}, root_dir = vim.fn.getcwd(),
+})

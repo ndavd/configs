@@ -1,5 +1,11 @@
+--Enable (broadcasting) snippet capability for completion
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
 -- C, C++
-require'lspconfig'.clangd.setup{}
+require'lspconfig'.clangd.setup{
+  capabilities = capabilities,
+}
 
 -- LaTeX
 require'lspconfig'.texlab.setup{
@@ -26,30 +32,42 @@ require'lspconfig'.texlab.setup{
 }
 
 -- For Rust
-require'lspconfig'.rust_analyzer.setup{}
+require'lspconfig'.rust_analyzer.setup{
+  capabilities = capabilities,
+}
 
 -- Vimscript
-require'lspconfig'.vimls.setup{}
+require'lspconfig'.vimls.setup{
+  capabilities = capabilities,
+}
 
 -- Cmake
-require'lspconfig'.cmake.setup{}
+require'lspconfig'.cmake.setup{
+}
 
 -- Python
-require'lspconfig'.pyright.setup{root_dir = function() return vim.fn.getcwd() end}
+require'lspconfig'.pyright.setup{
+  root_dir = function() return vim.fn.getcwd() end,
+  capabilities = capabilities,
+}
 
 -- JavaScript, TypeScript
-require'lspconfig'.tsserver.setup{root_dir = function() return vim.fn.getcwd() end}
+require'lspconfig'.tsserver.setup{
+  root_dir = function() return vim.fn.getcwd() end,
+  capabilities = capabilities,
+}
 
 -- Vue
-require'lspconfig'.vuels.setup{}
+require'lspconfig'.vuels.setup{
+  capabilities = capabilities,
+}
 
 -- bash
-require'lspconfig'.bashls.setup{cmd = { "bash-language-server.cmd", "start" }}
+require'lspconfig'.bashls.setup{
+  cmd = { "bash-language-server.cmd", "start" },
+}
 
 -- Html
---Enable (broadcasting) snippet capability for completion
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
 require'lspconfig'.html.setup {
   capabilities = capabilities,
   cmd = { "html-languageserver.cmd", "--stdio" }
@@ -57,11 +75,13 @@ require'lspconfig'.html.setup {
 
 -- Css
 require'lspconfig'.cssls.setup{
-  cmd = { "css-languageserver.cmd", "--stdio" }
+  capabilities = capabilities,
+  cmd = { "css-languageserver.cmd", "--stdio" },
 }
 
 -- Json
 require'lspconfig'.jsonls.setup {
+  capabilities = capabilities,
   commands = {
     Format = {
       function()
@@ -75,6 +95,7 @@ require'lspconfig'.jsonls.setup {
 local pid = vim.fn.getpid()
 local omnisharp_bin = "OmniSharp.exe"
 require'lspconfig'.omnisharp.setup{
+  capabilities = capabilities,
   cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) };
 }
 
