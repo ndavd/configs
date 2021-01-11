@@ -74,7 +74,13 @@ Plug 'phanviet/vim-monokai-pro'
 Plug 'jacoborus/tender.vim'
 Plug 'ajmwagar/vim-deus'
 Plug 'joshdick/onedark.vim'
-Plug 'christianchiarulli/nvcode-color-schemes.vim'
+Plug 'sainnhe/sonokai'
+Plug 'jonathanfilip/vim-lucius'
+Plug 'bluz71/vim-nightfly-guicolors'
+Plug 'jacoborus/tender.vim'
+Plug 'glepnir/oceanic-material'
+Plug 'KeitaNakamura/neodark.vim'
+Plug 'ackyshake/Spacegray.vim'
 call plug#end()
 
 " -----------------------------------------------------------------------"
@@ -88,7 +94,7 @@ let NERDTreeMinimalUI=0
 nnoremap <silent><leader>n :NERDTreeToggle<CR>
 
 " --- For Tagbar --------------------------------------------------------"
-nmap <F8> :TagbarToggle<CR>
+nmap <silent><leader>tb :TagbarToggle<CR>
 
 " --- For lightline ( with devicons ) -----------------------------------"
 set laststatus=2
@@ -318,7 +324,7 @@ let g:indentLine_char = '¦'
 "let g:indentLine_leadingSpaceEnabled = 1
 "let g:indentLine_leadingSpaceChar = '·'
 "let g:indent_blankline_space_char = '·'
-let g:indentLine_showFirstIndentLevel = 1
+let g:indentLine_showFirstIndentLevel = 0
 let g:indentLine_color_gui = '#444444'
 let g:indentLine_bgcolor_gui = 'NONE'
 let g:indentLine_fileTypeExclude = ['txt']
@@ -408,12 +414,20 @@ command Media lua require'telescope.builtin'.find_files{ find_command =
 lua require('lspconfig_config')
 " Format command ( for proper formatting )
 command! Format execute 'lua vim.lsp.buf.formatting()'
+command! LineDiag lua vim.lsp.diagnostic.show_line_diagnostics()
+" Keymaps
+nnoremap <silent>gD :lua vim.lsp.buf.declaration()<CR>
+nnoremap <silent>gd :lua vim.lsp.buf.definition()<CR>
+nnoremap <silent>gr :lua vim.lsp.buf.references()<CR>
+nnoremap <silent>K  :lua vim.lsp.buf.hover()<CR>
+nnoremap <silent>[d :lua vim.lsp.diagnostic.goto_prev()<CR>
+nnoremap <silent>]d :lua vim.lsp.diagnostic.goto_next()<CR>
 
 " --- For nvim-jdtls ----------------------------------------------------"
 augroup lsp
   au!
   au FileType java lua require'nvimjdtls_config'
-augroup end
+augroup END
 
 " --- For vim-vsnip -----------------------------------------------------"
 " Jump forward or backward
@@ -441,11 +455,10 @@ let g:completion_confirm_key = ",,"
 " -----------------------------------------------------------------------"
 " --- Enable 256 color support ------------------------------------------"
 set termguicolors
+
 " --- Set colorscheme ---------------------------------------------------"
 " Colorscheme
 colorscheme codedark
-
-let g:gruvbox_material_visual = 'reverse'
 set background=dark
 
 " --- Disable Python indent defaults ------------------------------------"
@@ -468,8 +481,7 @@ set shiftwidth=2
 set expandtab
 set smartindent
 set nu rnu
-set hls
-set cursorline
+set nohls
 set ignorecase
 set smartcase
 set noswapfile
@@ -482,6 +494,10 @@ set completeopt=menuone,noinsert,noselect
 set shortmess+=c
 let g:completion_matching_strategy_list =
       \ ['exact', 'substring', 'fuzzy', 'all']
+
+" --- Have cursorline active only on the active window ------------------"
+"au VimEnter,WinEnter * set cursorline
+"au WinLeave * set nocursorline
 
 " --- Highlights --------------------------------------------------------"
 " Transparent background color for Nvim
@@ -516,9 +532,6 @@ highlight LspDiagnosticsVirtualTextError guibg=NONE guifg=#ea6962
 highlight LspDiagnosticsFloatingError guibg=NONE guifg=#ea6962
 highlight LspDiagnosticsSignError guibg=NONE guifg=#ea6962
 
-" --- Fix syntax problems -----------------------------------------------"
-autocmd BufEnter * :syntax sync fromstart
-
 " --- Change guicursor --------------------------------------------------"
 set guicursor=a:block-Cursor
 
@@ -527,7 +540,7 @@ set mouse=a
 behave xterm
 
 " -----------------------------------------------------------------------"
-" ---------------- KEYMAPS ----------------------------------------------"
+" ---------------- VIM KEYMAPS ------------------------------------------"
 " -----------------------------------------------------------------------"
 " --- Write files and source init.vim -----------------------------------"
 nnoremap <leader>w :w<CR>
@@ -579,7 +592,7 @@ nnoremap <silent><leader>tp :tabp<CR>
 command Init e ~/AppData/Local/nvim/init.vim
 command Ginit e ~/AppData/Local/nvim/ginit.vim
 " Path to *_config.lua
-command CdLua cd C:/Program Files/nvim/bin/lua
+command CdLua cd ~/AppData/Local/nvim/lua
 
 " --- Activate/Deactivate Spelllang to EN -------------------------------"
 nnoremap <leader>p :setlocal spell spelllang=en_us<CR>
@@ -588,8 +601,5 @@ nnoremap <leader><S-p> :set nospell<CR>
 
 " --- Map to terminal ---------------------------------------------------"
 nnoremap <leader>bb <C-w>s<C-w>j:terminal<CR>
-
-" --- Map F5 to Ctrl-] (recommended for non EN Keyboards) ---------------"
-nnoremap <F5> <C-]><CR>
 
 " -----------------------------------------------------------------------"

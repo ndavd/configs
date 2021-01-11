@@ -14,7 +14,7 @@ require'lspconfig'.texlab.setup{
       build = {
         args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "-pvc" },
         forwardSearchAfter=true,
-        onSave = true
+        onSave = true,
       },
       forwardSearch = {
         executable = "SumatraPDF.exe",
@@ -23,9 +23,9 @@ require'lspconfig'.texlab.setup{
           "%p",
           "-forward-search",
           "%f",
-          "%l"
+          "%l",
         },
-        onSave=true
+        onSave=true,
       },
     }
   }
@@ -43,6 +43,7 @@ require'lspconfig'.vimls.setup{
 
 -- Cmake
 require'lspconfig'.cmake.setup{
+  capabilities = capabilities,
 }
 
 -- Python
@@ -70,7 +71,7 @@ require'lspconfig'.bashls.setup{
 -- Html
 require'lspconfig'.html.setup {
   capabilities = capabilities,
-  cmd = { "html-languageserver.cmd", "--stdio" }
+  cmd = { "html-languageserver.cmd", "--stdio" },
 }
 
 -- Css
@@ -96,7 +97,7 @@ local pid = vim.fn.getpid()
 local omnisharp_bin = "OmniSharp.exe"
 require'lspconfig'.omnisharp.setup{
   capabilities = capabilities,
-  cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) };
+  cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) },
 }
 
 -- Java
@@ -113,7 +114,7 @@ elseif vim.fn.has('win32') == 1 then
 else
   print("Unsupported system for sumneko")
 end
-local sumneko_root_path = 'C:/Program Files/nvim/bin/lua/sumneko_lua/lua-language-server'
+local sumneko_root_path = 'C:/sumneko_lua/lua-language-server'
 local sumneko_binary = sumneko_root_path.."/bin/"..system_name.."/lua-language-server"
 require'lspconfig'.sumneko_lua.setup {
   root_dir = function() return vim.fn.getcwd() end;
