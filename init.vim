@@ -15,7 +15,7 @@
 "|      ... place it into ~/AppData/Local/nvim/autoload)                |"
 "|    - place pt.utf-8.spl in ~/AppData/Local/nvim/spell                |"
 "|    - do all the requirements for each language server                |"
-"|    - install Exuberant Ctags, sumatraPDF, cargo                      |"
+"|    - install sumatraPDF, cargo                                       |"
 "|                                                                      |"
 "------------------------------------------------------------------------"
 
@@ -27,7 +27,7 @@ call plug#begin('~/AppData/Local/nvim/autoload')
 " Plugins
 Plug 'preservim/nerdtree'
 Plug 'itchyny/lightline.vim'
-Plug 'majutsushi/tagbar'
+Plug 'liuchengxu/vista.vim'
 Plug 'preservim/nerdcommenter'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-sleuth'
@@ -93,8 +93,13 @@ let mapleader = ' '
 let NERDTreeMinimalUI=0
 nnoremap <silent><leader>n :NERDTreeToggle<CR>
 
-" --- For Tagbar --------------------------------------------------------"
-nmap <silent><leader>tb :TagbarToggle<CR>
+" --- For Vista.vim -----------------------------------------------------"
+let g:vista_default_executive = 'nvim_lsp'
+let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+let g:vista_sidebar_width = 50
+let g:vista_update_on_text_changed = 1
+let g:vista_disable_statusline = exists('g:loaded_lightline')
+nnoremap <silent><leader>v :Vista!!<CR>
 
 " --- For lightline ( with devicons ) -----------------------------------"
 set laststatus=2
