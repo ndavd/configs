@@ -63,6 +63,8 @@ Plug 'dbeniamine/cheat.sh-vim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 Plug 'mfussenegger/nvim-jdtls'
+Plug 'mhinz/vim-rfc'
+"Plug 'mhinz/vim-startify'
 " Themes
 Plug 'tomasiser/vim-code-dark'
 Plug 'chriskempson/base16-vim'
@@ -89,18 +91,6 @@ call plug#end()
 " --- Define mapleader for keymaps --------------------------------------"
 let mapleader = ' '
 
-" --- For NERDTree ------------------------------------------------------"
-let NERDTreeMinimalUI=0
-nnoremap <silent><leader>n :NERDTreeToggle<CR>
-
-" --- For Vista.vim -----------------------------------------------------"
-let g:vista_default_executive = 'nvim_lsp'
-let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
-let g:vista_sidebar_width = 50
-let g:vista_update_on_text_changed = 1
-let g:vista_disable_statusline = exists('g:loaded_lightline')
-nnoremap <silent><leader>v :Vista!!<CR>
-
 " --- For lightline ( with devicons ) -----------------------------------"
 set laststatus=2
 " The (sub)separator symbol may not work in some terminals/devices
@@ -108,7 +98,7 @@ set laststatus=2
 let g:lightline = {
       \ 'colorscheme': 'codedark',
       \ 'component_function': {
-      \   'gitbranch': 'FugitiveHead' },
+      \   'gitbranch': 'FugitiveHeadWIcon' },
       \ 'component': {
       \   'percentwtot': '%2p%% (%L)',
       \   'charvaluehex': '0x%B',
@@ -131,6 +121,10 @@ let g:lightline = {
       \ 'separator': { 'left': '', 'right': '' },
       \ 'subseparator': { 'left': '', 'right': '' }
       \  }
+function FugitiveHeadWIcon()
+  let l:current_branch = FugitiveHead()
+  return l:current_branch != "" ? " ". l:current_branch : l:current_branch
+endfunction
 " Made specifically to work with codedark colorscheme
 let s:p   = g:lightline#colorscheme#codedark#palette
 let s:c1  = [ 'NONE', 'NONE'   ] " none
@@ -222,7 +216,10 @@ function AdjustLightline()
   call lightline#disable()
   call lightline#enable()
 endfunction
-autocmd VimEnter,VimResized,WinEnter * call AdjustLightline()
+autocmd VimEnter,VimResized * call AdjustLightline()
+
+" --- For vim-startify --------------------------------------------------"
+"let g:startify_padding_left = 3
 
 " --- For battery.vim ---------------------------------------------------"
 let g:battery#component_format='%v%% %s'
@@ -290,8 +287,22 @@ function TriggerSetBatteryIcon(timerA)
 endfunction
 let timerA = timer_start(1000, 'TriggerSetBatteryIcon', {'repeat': -1})
 
+" --- For Vista.vim -----------------------------------------------------"
+let g:vista_default_executive = 'nvim_lsp'
+let g:vista_icon_indent = ["└─ ", "├─ "]
+autocmd VimResized * let g:vista_sidebar_width =
+      \ string(nvim_win_get_width(0)*0.3)
+let g:vista_update_on_text_changed = 1
+let g:vista_cursor_delay = 10
+nnoremap <silent><leader>v :Vista!!<CR>
+
 " --- For NERDCommenter -------------------------------------------------"
 let NERDSpaceDelims=0
+let g:NERDCompactSexyComs = 1
+
+" --- For NERDTree ------------------------------------------------------"
+let NERDTreeMinimalUI=0
+nnoremap <silent><leader>n :NERDTreeToggle<CR>
 
 " --- For creating presentations in vim (use Goyo plugin) ---------------"
 autocmd BufNewFile,BufRead *.vpm call SetVimPresentationMode()
@@ -361,7 +372,7 @@ let g:better_escape_interval = 150
 let g:better_escape_shortcut = 'kk'
 
 " --- For nvim-treesitter -----------------------------------------------"
-lua require('treesitter_config')
+"lua require('treesitter_config')
 
 " --- For scrollbar -----------------------------------------------------"
 " Some settings
@@ -411,8 +422,12 @@ autocmd! Filetype TelescopePrompt
 autocmd Filetype TelescopePrompt set noshowmode
       \| autocmd BufLeave <buffer> set showmode
 " Media command ( nvim media player :D ) SOON
-command Media lua require'telescope.builtin'.find_files{ find_command =
-      \ {'fd', '--type', 'f', '-e', 'mp4' }, previewer = false }
+"command Media lua require'telescope.builtin'.find_files{ find_command =
+      "\ {'fd', '--type', 'f', '-e', 'mp4' }, previewer = false }
+" Keymaps
+nnoremap <leader>ff :lua require('telescope.builtin').find_files()<CR>
+nnoremap <leader>lg :lua require('telescope.builtin').live_grep()<CR>
+nnoremap <leader>gs :lua require('telescope.builtin').grep_string()<CR>
 
 " --- For lspconfig -----------------------------------------------------"
 " Load config file
@@ -425,8 +440,8 @@ nnoremap <silent>gD :lua vim.lsp.buf.declaration()<CR>
 nnoremap <silent>gd :lua vim.lsp.buf.definition()<CR>
 nnoremap <silent>gr :lua vim.lsp.buf.references()<CR>
 nnoremap <silent>K  :lua vim.lsp.buf.hover()<CR>
-nnoremap <silent>[d :lua vim.lsp.diagnostic.goto_prev()<CR>
-nnoremap <silent>]d :lua vim.lsp.diagnostic.goto_next()<CR>
+nnoremap <silent><leader>dp :lua vim.lsp.diagnostic.goto_prev()<CR>
+nnoremap <silent><leader>dn :lua vim.lsp.diagnostic.goto_next()<CR>
 
 " --- For nvim-jdtls ----------------------------------------------------"
 augroup lsp
@@ -525,6 +540,7 @@ highlight ColorColumn ctermbg=darkgrey guibg=#111111
 highlight Cursor ctermbg=white guibg=white
 " visual and search (for codedark theme)
 highlight Visual guibg=#0E1F2F
+highlight IncSearch guibg=#0E1F2F
 highlight Search guibg=#0E1F2F
 " Minimap
 highlight MinimapCurrentLine ctermfg=darkblue guifg=#213456 guibg=NONE
