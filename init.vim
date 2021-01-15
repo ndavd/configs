@@ -22,50 +22,98 @@
 " -----------------------------------------------------------------------"
 " ---------------- ADD PLUGINS ------------------------------------------"
 " -----------------------------------------------------------------------"
-" --- Vim-Plug ----------------------------------------------------------"
+" --- Start Vim-Plug ----------------------------------------------------"
 call plug#begin('~/AppData/Local/nvim/autoload')
-" Plugins
+
+" --- File explorer and statusline --------------------------------------"
 Plug 'preservim/nerdtree'
 Plug 'itchyny/lightline.vim'
-Plug 'liuchengxu/vista.vim'
-Plug 'preservim/nerdcommenter'
-Plug 'tpope/vim-surround'
+
+" --- Get battery level -------------------------------------------------"
+Plug 'lambdalisue/battery.vim'
+
+" --- Minimap -----------------------------------------------------------"
+Plug 'wfxr/minimap.vim'
+      \, { 'do': ':!cargo install --locked code-minimap' } "Requires cargo
+
+" --- Scrollbar ---------------------------------------------------------"
+Plug 'Xuyuanp/scrollbar.nvim'
+
+" --- Better start screen -----------------------------------------------"
+Plug 'mhinz/vim-startify'
+
+" --- Icon support ------------------------------------------------------"
+Plug 'ryanoasis/vim-devicons'
+Plug 'kyazdani42/nvim-web-devicons'
+
+" --- Indentation -------------------------------------------------------"
 Plug 'tpope/vim-sleuth'
 Plug 'Yggdroot/indentLine'
 Plug 'lukas-reineke/indent-blankline.nvim', { 'branch': 'lua' }
+
+" --- Auto comment ------------------------------------------------------"
+Plug 'preservim/nerdcommenter'
+
+" --- Better escape -----------------------------------------------------"
+Plug 'jdhao/better-escape.vim'
+
+" --- Fold text ---------------------------------------------------------"
 Plug 'pseewald/vim-anyfold'
+
+" --- Surround text -----------------------------------------------------"
+Plug 'tpope/vim-surround'
+
+" --- Complete brackets -------------------------------------------------"
+Plug 'jiangmiao/auto-pairs'
+
+" --- Repeat commands ---------------------------------------------------"
+Plug 'tpope/vim-repeat'
+
+" --- Note taking -------------------------------------------------------"
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-notes'
-Plug 'tpope/vim-repeat'
-Plug 'jiangmiao/auto-pairs'
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-fugitive'
-Plug 'ervandew/supertab'
-Plug 'ryanoasis/vim-devicons'
-Plug 'kyazdani42/nvim-web-devicons'
+
+" --- Make tables -------------------------------------------------------"
 Plug 'dhruvasagar/vim-table-mode'
-Plug 'Shougo/neosnippet.vim'
-Plug 'Shougo/neosnippet-snippets'
-Plug 'hrsh7th/vim-vsnip'
-Plug 'hrsh7th/vim-vsnip-integ'
-Plug 'lambdalisue/battery.vim'
+
+" --- RFC ---------------------------------------------------------------"
+Plug 'mhinz/vim-rfc'
+
+" --- Cheat.sh ----------------------------------------------------------"
+Plug 'dbeniamine/cheat.sh-vim'
+
+" --- Git ---------------------------------------------------------------"
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+
+" --- Use Tab for completion --------------------------------------------"
+Plug 'ervandew/supertab'
+
+" --- Telescope ---------------------------------------------------------"
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-symbols.nvim'
-Plug 'wfxr/minimap.vim'
-      \, { 'do': ':!cargo install --locked code-minimap' } "Requires cargo
-Plug 'jdhao/better-escape.vim'
+
+" --- Treesitter --------------------------------------------------------"
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 Plug 'nvim-treesitter/playground'
-Plug 'Xuyuanp/scrollbar.nvim'
-Plug 'dbeniamine/cheat.sh-vim'
+
+" --- Snippets ----------------------------------------------------------"
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/neosnippet-snippets'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+
+" --- LSP ---------------------------------------------------------------"
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 Plug 'mfussenegger/nvim-jdtls'
-Plug 'mhinz/vim-rfc'
-"Plug 'mhinz/vim-startify'
-" Themes
+
+" --- View tags ---------------------------------------------------------"
+Plug 'liuchengxu/vista.vim'
+
+" --- Colorschemes ------------------------------------------------------"
 Plug 'tomasiser/vim-code-dark'
 Plug 'chriskempson/base16-vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
@@ -83,6 +131,8 @@ Plug 'jacoborus/tender.vim'
 Plug 'glepnir/oceanic-material'
 Plug 'KeitaNakamura/neodark.vim'
 Plug 'ackyshake/Spacegray.vim'
+
+" --- End Vim-Plug ------------------------------------------------------"
 call plug#end()
 
 " -----------------------------------------------------------------------"
@@ -426,7 +476,7 @@ autocmd Filetype TelescopePrompt set noshowmode
       "\ {'fd', '--type', 'f', '-e', 'mp4' }, previewer = false }
 " Keymaps
 nnoremap <leader>ff :lua require('telescope.builtin').find_files()<CR>
-nnoremap <leader>lg :lua require('telescope.builtin').live_grep()<CR>
+nnoremap <leader>gl :lua require('telescope.builtin').live_grep()<CR>
 nnoremap <leader>gs :lua require('telescope.builtin').grep_string()<CR>
 
 " --- For lspconfig -----------------------------------------------------"
