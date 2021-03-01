@@ -9,10 +9,11 @@ require('telescope').setup{
       '--column',
       '--smart-case'
     },
-    prompt_position = "bottom",
-    prompt_prefix = " ",
+    prompt_position = "top",
+    prompt_prefix = " > ",
+    initial_mode = "insert",
     selection_strategy = "reset",
-    sorting_strategy = "descending",
+    sorting_strategy = "ascending",
     layout_strategy = "flex",
     layout_defaults = {
       horizontal = {
@@ -27,7 +28,7 @@ require('telescope').setup{
       }
     },
     file_sorter =  require'telescope.sorters'.get_fuzzy_file,
-    file_ignore_patterns = {},
+    file_ignore_patterns = {'%%'}, -- previewer doesn't work well with %'s
     generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
     shorten_path = true,
     winblend = 0,
@@ -36,20 +37,18 @@ require('telescope').setup{
     results_height = 1,
     results_width = 0.1,
     border = {},
-    --borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰'},
-    borderchars = {"─", "│", "─", "│", "┌", "┐", "┘", "└"},
+    borderchars = {"─", "│", "─", "│", "╭", "╮", "╯", "╰"},
     color_devicons = true,
     use_less = true,
-    -- default { }, currently unsupported for shells like cmd.exe / powershell.exe
     set_env = { ['COLORTERM'] = 'truecolor' },
-    -- For buffer previewer use `require'telescope.previewers'.vim_buffer_cat.new`
     file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
-    -- For buffer previewer use `require'telescope.previewers'.vim_buffer_vimgrep.new`
-    grep_previewer = require'telescope.previewers'.vimgrep.new,
-    -- For buffer previewer use `require'telescope.previewers'.vim_buffer_qflist.new`
-    qflist_previewer = require'telescope.previewers'.qflist.new,
+    grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
+    qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
 
     -- Developer configurations: Not meant for general override
     buffer_previewer_maker = require'telescope.previewers'.buffer_previewer_maker,
-  }
+  },
+  extensions = {}
 }
+
+require'telescope'.load_extension("frecency")

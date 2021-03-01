@@ -1,6 +1,12 @@
---Enable (broadcasting) snippet capability for completion
+-- Enable (broadcasting) snippet capability for completion
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+-- Make root_dir the current directory ( not recommended )
+local current_dir = function() return vim.fn.getcwd() end
+
+-- PID
+local pid = vim.fn.getpid()
 
 -- C, C++
 require'lspconfig'.clangd.setup{
@@ -31,9 +37,10 @@ require'lspconfig'.texlab.setup{
   }
 }
 
--- For Rust
+-- Rust
 require'lspconfig'.rust_analyzer.setup{
   capabilities = capabilities,
+  cmd = { "rust-analyzer-windows.exe" },
 }
 
 -- Vimscript
@@ -48,28 +55,23 @@ require'lspconfig'.cmake.setup{
 
 -- Python
 require'lspconfig'.pyright.setup{
-  root_dir = function() return vim.fn.getcwd() end,
+  root_dir = current_dir,
   capabilities = capabilities,
 }
 
 -- JavaScript, TypeScript
 require'lspconfig'.tsserver.setup{
-  root_dir = function() return vim.fn.getcwd() end,
+  root_dir = current_dir,
   capabilities = capabilities,
 }
 
--- Vue
-require'lspconfig'.vuels.setup{
-  capabilities = capabilities,
-}
-
--- bash
+-- Bash
 require'lspconfig'.bashls.setup{
   cmd = { "bash-language-server.cmd", "start" },
 }
 
 -- Html
-require'lspconfig'.html.setup {
+require'lspconfig'.html.setup{
   capabilities = capabilities,
   cmd = { "html-languageserver.cmd", "--stdio" },
 }
@@ -81,7 +83,7 @@ require'lspconfig'.cssls.setup{
 }
 
 -- Json
-require'lspconfig'.jsonls.setup {
+require'lspconfig'.jsonls.setup{
   capabilities = capabilities,
   commands = {
     Format = {
@@ -92,12 +94,10 @@ require'lspconfig'.jsonls.setup {
   }
 }
 
--- C#
-local pid = vim.fn.getpid()
-local omnisharp_bin = "OmniSharp.exe"
+-- Csharp
 require'lspconfig'.omnisharp.setup{
   capabilities = capabilities,
-  cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) },
+  cmd = { "OmniSharp.exe", "--languageserver", "--hostPID", tostring(pid) },
 }
 
 -- Java
@@ -116,9 +116,10 @@ else
 end
 local sumneko_root_path = 'C:/sumneko_lua/lua-language-server'
 local sumneko_binary = sumneko_root_path.."/bin/"..system_name.."/lua-language-server"
-require'lspconfig'.sumneko_lua.setup {
-  root_dir = function() return vim.fn.getcwd() end;
-  cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"};
+require'lspconfig'.sumneko_lua.setup{
+  root_dir = current_dir,
+  capabilities = capabilities,
+  cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"},
   settings = {
     Lua = {
       runtime = {
@@ -138,6 +139,7 @@ require'lspconfig'.sumneko_lua.setup {
           [vim.fn.expand('$VIMRUNTIME/lua')] = true,
           [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
         },
+        preloadFileSize = 1000,
       },
     },
   },
