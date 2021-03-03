@@ -27,7 +27,7 @@ require('telescope').setup{
         preview_height = 0.5,
       }
     },
-    file_sorter =  require'telescope.sorters'.get_fuzzy_file,
+    file_sorter =  require'telescope.sorters'.get_fzy_sorter,
     file_ignore_patterns = {'%%'}, -- previewer doesn't work well with %'s
     generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
     shorten_path = true,
@@ -48,7 +48,28 @@ require('telescope').setup{
     -- Developer configurations: Not meant for general override
     buffer_previewer_maker = require'telescope.previewers'.buffer_previewer_maker,
   },
-  extensions = {}
+  extensions = {
+    frecency = {
+      show_scores = true,
+    },
+    fzy_native = {
+      override_generic_sorter = false,
+      override_file_sorter = true,
+    }
+  }
 }
 
+-- Load extensions
 require'telescope'.load_extension("frecency")
+require'telescope'.load_extension("fzy_native")
+
+-- Search config dir
+local M = {}
+M.search_config = function()
+  require('telescope.builtin').find_files({
+    prompt_title = 'CONFIG',
+    cwd = vim.fn.stdpath('config')
+  })
+end
+
+return M

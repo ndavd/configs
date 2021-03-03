@@ -19,7 +19,7 @@
 " ---------------- ADD PLUGINS ------------------------------------------"
 " -----------------------------------------------------------------------"
 " --- Start Vim-Plug ----------------------------------------------------"
-call plug#begin('~/AppData/Local/nvim/autoload')
+call plug#begin(stdpath('config').'/autoload')
 
 " --- Icon support ------------------------------------------------------"
 Plug 'kyazdani42/nvim-web-devicons'
@@ -35,7 +35,7 @@ Plug 'psliwka/vim-smoothie'
 Plug 'dstein64/nvim-scrollview'
 
 " --- Better start screen -----------------------------------------------"
-Plug 'sp1n0r/vim-startify', { 'branch': 'fix_center' }
+Plug 'ndavidq0/vim-startify', { 'branch': 'fix_center' }
 
 " --- Indentation -------------------------------------------------------"
 Plug 'tpope/vim-sleuth'
@@ -78,6 +78,7 @@ Plug 'rafcamlet/nvim-luapad'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzy-native.nvim'
 Plug 'nvim-telescope/telescope-symbols.nvim'
 Plug 'nvim-telescope/telescope-frecency.nvim'
 
@@ -103,6 +104,7 @@ Plug 'liuchengxu/vista.vim'
 Plug 'tjdevries/gruvbuddy.nvim'
 Plug 'tjdevries/colorbuddy.nvim'
 Plug 'tomasiser/vim-code-dark'
+Plug 'sainnhe/forest-night'
 Plug 'chriskempson/base16-vim'
 Plug 'morhetz/gruvbox'
 Plug 'sainnhe/gruvbox-material'
@@ -113,7 +115,6 @@ Plug 'jacoborus/tender.vim'
 Plug 'ajmwagar/vim-deus'
 Plug 'joshdick/onedark.vim'
 Plug 'sainnhe/sonokai'
-Plug 'jacoborus/tender.vim'
 Plug 'glepnir/oceanic-material'
 Plug 'KeitaNakamura/neodark.vim'
 Plug 'ackyshake/Spacegray.vim'
@@ -353,8 +354,7 @@ lua require('webdevicons_config').my_setup()
 " --- For Dirvish -------------------------------------------------------"
 au FileType dirvish execute("setl stl=".escape("%f%<%=dirvish   ", ' '))
 nnoremap <leader>d :Dirvish<CR>
-"call dirvish#add_icon_fn({p ->
-      "\luaeval("require'webdevicons_config'.get_icon{filepath=_A}",p)})
+"nmap <leader>d <Plug>(dirvish_vsplit_up)
 
 " --- For ScrollView ----------------------------------------------------"
 let g:scrollview_on_startup = 0
@@ -399,8 +399,6 @@ let g:startify_lists = [
       \ { 'type': 'commands',  'header': ['   Commands']       },
       \ ]
 let g:startify_bookmarks = [
-      \ {'i': '~\AppData\Local\nvim\init.vim'},
-      \ {'n': '~\AppData\Local\nvim\'},
       \ ]
 let g:startify_commands = [
       \ {'f': ['Frecency', 'Telescope frecency']},
@@ -464,6 +462,9 @@ else
   nnoremap <silent><leader>v :Vista!!<CR>
 endif
 
+" --- For Luapad --------------------------------------------------------"
+lua require('luapad_config')
+
 " --- For NERDCommenter -------------------------------------------------"
 let NERDSpaceDelims=0
 let g:NERDAltDelims_c     = 1
@@ -514,6 +515,7 @@ lua require('telescope_config')
       "\ {'fd', '--type', 'f', '-e', 'mp4' }, previewer = false }
 " Keymaps
 nnoremap <leader>ff :lua require('telescope.builtin').find_files()<CR>
+nnoremap <leader>fc :lua require('telescope_config').search_config()<CR>
 nnoremap <leader>gl :lua require('telescope.builtin').live_grep()<CR>
 nnoremap <leader>gs :lua require('telescope.builtin').grep_string()<CR>
 nnoremap <leader>ga :lua require('telescope.builtin').lsp_code_actions()<CR>
@@ -577,7 +579,10 @@ let g:completion_matching_strategy_list =
 " -----------------------------------------------------------------------"
 " --- Write files and source --------------------------------------------"
 nnoremap <leader>w :w<CR>
-nnoremap <leader>ss :so ~\AppData\Local\nvim\init.vim<CR>
+nnoremap <leader>ss :so $MYVIMRC<CR>
+
+" --- Lcd into current file directory -----------------------------------"
+command Cdhere lcd %:p:h
 
 " --- Window handling ---------------------------------------------------"
 nnoremap <silent><leader>h :wincmd h<CR>
