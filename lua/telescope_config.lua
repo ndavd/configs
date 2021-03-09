@@ -1,5 +1,9 @@
+local out = {}
+local actions = require('telescope.actions')
+
 require('telescope').setup{
   defaults = {
+    mappings = { i = { ['<esc>'] = actions.close, } },
     vimgrep_arguments = {
       'rg',
       '--color=never',
@@ -64,12 +68,22 @@ require'telescope'.load_extension("frecency")
 require'telescope'.load_extension("fzy_native")
 
 -- Search config dir
-local M = {}
-M.search_config = function()
+out.search_config = function()
   require('telescope.builtin').find_files({
     prompt_title = 'CONFIG',
     cwd = vim.fn.stdpath('config')
   })
 end
 
-return M
+-- Git branches
+--out.git_branches = function()
+  --require('telescope.builtin').git_branches({
+    --attach_mappings = function(_, map)
+      --map('i', '<c-d>', actions.git_delete_branch)
+      --map('n', '<c-d>', actions.git_delete_branch)
+      --return true
+    --end
+  --})
+--end
+
+return out

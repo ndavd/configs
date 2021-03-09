@@ -1,4 +1,6 @@
-local function my_setup()
+local out = {}
+
+out.my_setup = function()
   require'nvim-web-devicons'.setup{
     override = {
       default_icon = {
@@ -14,7 +16,7 @@ end
 local STORE_HL
 
 -- Example: get_icon{filepath="foo/bar.vim"}
-local function get_icon(opts)
+out.get_icon = function(opts)
   --[[ do_hl is an array, index 1 is a boolean
   if do_hl[1] is true then index 2 is the hl_group of the statusline
   and index 3 is the hl_group of the icon --]]
@@ -54,10 +56,6 @@ end
 --[[
 If this function isn't called when sourcing
 init.vim the filetype icon does not update --]]
-local function make_hl() if STORE_HL~=nil then vim.cmd(STORE_HL) end end
+out.make_hl = function() if STORE_HL~=nil then vim.cmd(STORE_HL) end end
 
-return {
-  my_setup = my_setup,
-  get_icon = get_icon,
-  make_hl = make_hl
-}
+return out

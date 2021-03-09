@@ -9,118 +9,13 @@
 "|       init.vim file (nvim 0.5.0) ------------------ by: ndavid       |"
 "|----------------------------------------------------------------------|"
 "|    FIRST TIME TODOS                                                  |"
-"|    - install Vim-Plug (download plug.vim                             |"
-"|      ... place it into /autoload)                                    |"
+"|    - install Packer.nvim                                             |"
 "|    - place pt.utf-8.spl into /spell                                  |"
 "|    - install sumatraPDF, sqlite, etc.                                |"
 "------------------------------------------------------------------------"
 
-" -----------------------------------------------------------------------"
-" ---------------- ADD PLUGINS ------------------------------------------"
-" -----------------------------------------------------------------------"
-" --- Start Vim-Plug ----------------------------------------------------"
-call plug#begin(stdpath('config').'/autoload')
-
-" --- Icon support ------------------------------------------------------"
-Plug 'kyazdani42/nvim-web-devicons'
-
-" --- File explorer -----------------------------------------------------"
-Plug 'justinmk/vim-dirvish'
-"Plug 'kyazdani42/nvim-tree.lua' " Doesn't support Windows yet
-
-" --- Smooth Scrolling --------------------------------------------------"
-Plug 'psliwka/vim-smoothie'
-
-" --- Scrollbar ---------------------------------------------------------"
-Plug 'dstein64/nvim-scrollview'
-
-" --- Better start screen -----------------------------------------------"
-Plug 'ndavidq0/vim-startify', { 'branch': 'fix_center' }
-
-" --- Indentation -------------------------------------------------------"
-Plug 'tpope/vim-sleuth'
-
-" --- Auto comment ------------------------------------------------------"
-Plug 'preservim/nerdcommenter'
-
-" --- Better escape -----------------------------------------------------"
-Plug 'jdhao/better-escape.vim'
-
-" --- Fold text ---------------------------------------------------------"
-Plug 'pseewald/vim-anyfold'
-
-" --- Surround text -----------------------------------------------------"
-Plug 'tpope/vim-surround'
-
-" --- Complete brackets -------------------------------------------------"
-Plug 'jiangmiao/auto-pairs'
-
-" --- RFC ---------------------------------------------------------------"
-Plug 'mhinz/vim-rfc'
-
-" --- Cheat.sh ----------------------------------------------------------"
-Plug 'dbeniamine/cheat.sh-vim'
-
-" --- Md previewer ------------------------------------------------------"
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
-
-" --- Git ---------------------------------------------------------------"
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
-
-" --- Sql.nvim ----------------------------------------------------------"
-Plug 'tami5/sql.nvim'
-
-" --- Lua Scratchpad ----------------------------------------------------"
-Plug 'rafcamlet/nvim-luapad'
-
-" --- Telescope ---------------------------------------------------------"
-Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'nvim-telescope/telescope-fzy-native.nvim'
-Plug 'nvim-telescope/telescope-symbols.nvim'
-Plug 'nvim-telescope/telescope-frecency.nvim'
-
-" --- Treesitter --------------------------------------------------------"
-Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
-Plug 'nvim-treesitter/playground'
-
-" --- Snippets ----------------------------------------------------------"
-Plug 'Shougo/neosnippet.vim'
-Plug 'Shougo/neosnippet-snippets'
-Plug 'hrsh7th/vim-vsnip'
-Plug 'hrsh7th/vim-vsnip-integ'
-
-" --- LSP ---------------------------------------------------------------"
-Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-lua/completion-nvim'
-Plug 'mfussenegger/nvim-jdtls'
-
-" --- View tags ---------------------------------------------------------"
-Plug 'liuchengxu/vista.vim'
-
-" --- Colorschemes ------------------------------------------------------"
-Plug 'tjdevries/gruvbuddy.nvim'
-Plug 'tjdevries/colorbuddy.nvim'
-Plug 'tomasiser/vim-code-dark'
-Plug 'sainnhe/forest-night'
-Plug 'chriskempson/base16-vim'
-Plug 'morhetz/gruvbox'
-Plug 'sainnhe/gruvbox-material'
-Plug 'dracula/vim', { 'as': 'dracula' }
-Plug 'lifepillar/vim-solarized8'
-Plug 'phanviet/vim-monokai-pro'
-Plug 'jacoborus/tender.vim'
-Plug 'ajmwagar/vim-deus'
-Plug 'joshdick/onedark.vim'
-Plug 'sainnhe/sonokai'
-Plug 'glepnir/oceanic-material'
-Plug 'KeitaNakamura/neodark.vim'
-Plug 'ackyshake/Spacegray.vim'
-
-" --- End Vim-Plug ------------------------------------------------------"
-call plug#end()
+" --- Load plugins ------------------------------------------------------"
+lua require'plugins'
 
 " -----------------------------------------------------------------------"
 " ---------------- NVIM SETTINGS ----------------------------------------"
@@ -175,9 +70,9 @@ set inccommand=split
 if &list
   let g:listchar_index = 0
   let g:listchar_options = [
-        \ 'tab:\ ,conceal:┊,nbsp:⍽,extends:>,precedes:<,trail:·',
         \ 'tab:\ ,conceal:┊,nbsp:⍽,extends:>,precedes:<,trail:·'.
-        \ ',eol:﬋'
+        \ ',eol:﬋',
+        \ 'tab:\ ,conceal:┊,nbsp:⍽,extends:>,precedes:<,trail:·',
         \ ]
   " Nice chars ﲒ ﮊ ⌴ ⍽   ▷▻⊳►▶▚‽⊛ψψδ…﬋↲↵┊
   " ﴣ           
@@ -193,137 +88,12 @@ if &list
   call CycleListchars()
 endif
 
-" --- Set statusline ----------------------------------------------------"
-function ActiveStatusline()
-  if MakeStatln()
-    let l:stl = "%#StatlnM# %{DetectMode()} "
-          \ ."%#StatlnSepM#%#StatlnBG# "
-    if FugitiveHead() != ''
-      let l:stl .= "%#StatlnGit# "
-            \ ."%#StatlnBG#%{FugitiveHead()} "
-    endif
-    let l:icon = luaeval("require'webdevicons_config'.get_icon"
-          \ ."{do_hl={true,'StatlnBG', 'StatlnIconAc'}}")
-    let l:stl .= l:icon." %f %m%<%="
-          \ ." %#StatlnSep1#%#StatlnCmp1# %2l(%L):%-2c"
-          \ ." %#StatlnCmp2#"
-          \ ." %{strftime('%a %d/%m  %H:%M:%S ')}"
-    execute("setl stl=".escape(l:stl, ' '))
-  endif
-endfunction
-function InnactiveStatusline()
-  if MakeStatln()
-    let l:icon =
-          \ luaeval("require'webdevicons_config'.get_icon{}")
-    let l:stl = " ".l:icon
-          \ ." %f %m%<%#StatlnInacSep1#%#StatlnBG#%="
-          \ ."%#StatlnInacSep1#%#StatlnInacCmp#"
-          \ ." %2l(%L):%-2c%#StatlnInacSep2# "
-    execute("setl stl=".escape(l:stl, ' '))
-  endif
-endfunction
-function MakeStatln()
-  let l:fts = ['dirvish', 'vista_kind', 'startify']
-  return index(l:fts,&ft)==-1 ? 1 : 0
-endfunction
-function DetectMode()
-  if match(['n','c'], mode())!=-1
-    let l:clr='#6b9956'
-  elseif match(['i','ix','t','s','S',"\<C-s>"], mode())!=-1
-    let l:clr='#61afef'
-  elseif match(['R'], mode())!=-1
-    let l:clr='#e06b75'
-  elseif match(['v','V',"\<C-v>"], mode())!=-1
-    let l:clr='#c678dd'
-  endif
-  let l:mmap = {
-        \ 'n': 'NORMAL', 'i': 'INSERT', 'R': 'REPLACE',
-        \ 'v': 'VISUAL', 'V': 'V·LINE', "\<C-v>": 'V·BLOCK',
-        \ 'c': 'COMMAND', 's': 'SELECT', 'S': 'S·LINE',
-        \ "\<C-s>": 'S·BLOCK', 't': 'TERMINAL'
-        \ }
-  execute('hi StatlnM guifg=#111111 guibg='.l:clr.' gui=bold')
-  execute('hi StatlnSepM guifg='.l:clr.' guibg=NONE')
-  return get(l:mmap, mode(), '')
-endfunction
-" Update Statusline when entering/leaving
-au WinEnter,BufEnter * call ActiveStatusline()
-au WinLeave,BufLeave * call InnactiveStatusline()
-" Update filetype icon highlight
-lua require('webdevicons_config').make_hl()
-" Force statusline update every x time
-let SLtimer = timer_start(500, 'UpdateStatusline', {'repeat':-1})
-function! UpdateStatusline(SLtimer)
-  execute 'let &ro=&ro'
-endfunction
-au TermOpen * setl statusline =%=\\ \\ terminal\ \%=
-
 " --- Have cursorline active only on the active window ------------------"
 "hi CursorLine guibg=NONE guibg=#101010
 "hi CursorLineNr guifg=white guibg=#101010
 "au WinEnter,BufEnter * if &ft!='startify' | setl cursorline
       "\ | hi CursorLine guibg=#101010 | endif
 "au WinLeave,BufLeave * setl nocursorline | hi CursorLine guibg=NONE
-
-" --- Highlights --------------------------------------------------------"
-" Transparent background color for Nvim
-hi Normal guibg=NONE
-hi NonText guibg=NONE
-hi EndOfBuffer guibg=NONE
-hi ModeMsg guibg=NONE
-hi MoreMsg guibg=NONE
-hi ModeArea guibg=NONE
-hi ErrorMsg guibg=NONE
-hi Error guibg=NONE
-hi Directory guibg=NONE
-hi VertSplit guibg=NONE
-hi SignColumn guibg=NONE
-" Number, CC, Cursor and Normal
-hi LineNr guibg=bg guifg=darkgrey
-hi CursorLine guibg=NONE
-hi CursorLineNr guibg=bg guifg=white
-hi ColorColumn ctermbg=darkgrey guibg=#111111
-hi Cursor ctermbg=white guibg=white
-" Visual and Search (for codedark theme)
-hi Visual guibg=#0E1F2F
-hi Search guibg=#0E1F2F
-" IncSearch
-hi IncSearch gui=reverse
-" Pmenu
-hi PmenuSel blend=0
-" MatchParen
-hi MatchParen guibg=#303030
-" Statusline
-hi Statusline guibg=#303030 guifg=#d4d4d4
-hi StatuslineNC guibg=#111111 guifg=#949494
-hi StatlnGit guifg=#e37933
-hi StatlnBG guibg=NONE guifg=#949494
-hi StatlnCmp1 guibg=#303030 guifg=#949494
-hi StatlnSep1 guibg=NONE guifg=#303030
-hi StatlnCmp2 guibg=#949494 guifg=#000000
-hi StatlnInacCmp guibg=#111111 guifg=#b0b0b0
-hi StatlnInacSep1 guibg=NONE guifg=#111111
-hi StatlnInacSep2 guibg=#111111 guifg=#949494
-" Tabline
-hi TabLine guifg=#6b9956 guibg=#111111
-hi TabLineSel guifg=#111111 guibg=#6b9956
-hi TabLineFill guifg=#949494 guibg=NONE
-" Listchars
-hi NonText guifg=#3a3a3a
-hi Whitespace guifg=#3a3a3a
-" ScrollView
-hi ScrollView guibg=#ffffff
-" Telescope
-hi TelescopeBorder guifg=#ffffff
-hi TelescopePromptPrefix guifg=#ea6962
-" Lsp
-hi LspDiagnosticsDefaultError guibg=NONE guifg=#ea6962
-hi LspDiagnosticsVirtualTextError guibg=NONE guifg=#ea6962
-hi LspDiagnosticsFloatingError guibg=NONE guifg=#ea6962
-hi LspDiagnosticsSignError guibg=NONE guifg=#ea6962
-" Startify
-hi StartifyHeader gui=NONE guifg=#d4d4d4
-hi StartifyFooter gui=NONE guifg=#d4d4d4
 
 " --- Change guicursor --------------------------------------------------"
 set guicursor=a:block-Cursor,i-r:hor20-Cursor
@@ -349,18 +119,18 @@ augroup END
 let base16colorspace=256  " Access colors present in 256 colorspace
 
 " --- For WebDevicons ---------------------------------------------------"
-lua require('webdevicons_config').my_setup()
+" Update filetype icon highlight
+lua require('webdevicons_config').make_hl()
 
 " --- For Dirvish -------------------------------------------------------"
 au FileType dirvish execute("setl stl=".escape("%f%<%=dirvish   ", ' '))
-nnoremap <leader>d :Dirvish<CR>
-"nmap <leader>d <Plug>(dirvish_vsplit_up)
+nnoremap <silent><leader>d :Dirvish<CR>
 
 " --- For ScrollView ----------------------------------------------------"
 let g:scrollview_on_startup = 0
 let g:scrollview_column = 1
 let g:scrollview_excluded_filetypes =
-      \ ['startify', 'nerdtree', 'vista_kind', 'vim-plug']
+      \ ['startify', 'nerdtree', 'vista_kind', 'packer']
 let g:scrollview_mode = 'flexible'
 let g:active_scrollview = 0
 function ToggleSrollView()
@@ -402,7 +172,7 @@ let g:startify_bookmarks = [
       \ ]
 let g:startify_commands = [
       \ {'f': ['Frecency', 'Telescope frecency']},
-      \ {'p': 'PlugUpdate'},
+      \ {'p': 'PackerSync'},
       \ ]
 let g:startify_files_number = 5
 let g:startify_fortune_use_unicode = 1
@@ -515,13 +285,14 @@ lua require('telescope_config')
       "\ {'fd', '--type', 'f', '-e', 'mp4' }, previewer = false }
 " Keymaps
 nnoremap <leader>ff :lua require('telescope.builtin').find_files()<CR>
-nnoremap <leader>fc :lua require('telescope_config').search_config()<CR>
 nnoremap <leader>gl :lua require('telescope.builtin').live_grep()<CR>
 nnoremap <leader>gs :lua require('telescope.builtin').grep_string()<CR>
 nnoremap <leader>ga :lua require('telescope.builtin').lsp_code_actions()<CR>
 nnoremap <leader>gt :lua require('telescope.builtin').treesitter()<CR>
 nnoremap <leader><leader>h :lua require('telescope.builtin').help_tags()<CR>
 nnoremap z= :lua require('telescope.builtin').spell_suggest()<CR>
+nnoremap <leader>fc :lua require('telescope_config').search_config()<CR>
+nnoremap <leader>gb :lua require('telescope_config').git_branches()<CR>
 
 " --- For lspconfig -----------------------------------------------------"
 " Load config file
