@@ -1,6 +1,6 @@
---vim.cmd [[packadd packer.nvim]]
+return require('packer').startup(function(use)
 
-return require('packer').startup(function()
+  -- Packer --
   use 'wbthomason/packer.nvim'
 
   -- Icon support --
@@ -25,8 +25,8 @@ return require('packer').startup(function()
   -- Auto comment --
   use 'preservim/nerdcommenter'
 
-  -- Better escape --
-  use 'jdhao/better-escape.vim'
+  -- Hop --
+  use 'phaazon/hop.nvim'
 
   -- Fold text --
   use 'pseewald/vim-anyfold'
@@ -46,9 +46,12 @@ return require('packer').startup(function()
   -- Md previewer --
   use {'iamcco/markdown-preview.nvim', run = 'cd app && yarn install'}
 
+  -- Colorizer --
+  use {'norcalli/nvim-colorizer.lua'}
+
   -- Git --
   use 'tpope/vim-fugitive'
-  use 'airblade/vim-gitgutter'
+  use 'mhinz/vim-signify'
 
   -- Sql.nvim --
   use 'tami5/sql.nvim'
@@ -83,21 +86,12 @@ return require('packer').startup(function()
   use 'liuchengxu/vista.vim'
 
   -- Colorschemes --
-  use 'tjdevries/gruvbuddy.nvim'
-  use 'tjdevries/colorbuddy.nvim'
-  use 'tomasiser/vim-code-dark'
-  use 'chriskempson/base16-vim'
-  use 'morhetz/gruvbox'
   use 'sainnhe/gruvbox-material'
+  use 'tomasiser/vim-code-dark'
+  use 'sainnhe/edge'
   use 'lifepillar/vim-solarized8'
-  use 'phanviet/vim-monokai-pro'
-  use 'ajmwagar/vim-deus'
-  use 'joshdick/onedark.vim'
   use 'sainnhe/sonokai'
-  use 'jacoborus/tender.vim'
-  use 'glepnir/oceanic-material'
   use 'KeitaNakamura/neodark.vim'
-  use 'ackyshake/Spacegray.vim'
   use {'dracula/vim', as = 'dracula'}
 
 end)

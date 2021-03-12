@@ -32,29 +32,13 @@ local function try_loadstring(s, component, name)
 end
 
 _G.packer_plugins = {
-  ["Spacegray.vim"] = {
-    loaded = true,
-    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\Spacegray.vim"
-  },
   ["auto-pairs"] = {
     loaded = true,
     path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\auto-pairs"
   },
-  ["base16-vim"] = {
-    loaded = true,
-    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\base16-vim"
-  },
-  ["better-escape.vim"] = {
-    loaded = true,
-    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\better-escape.vim"
-  },
   ["cheat.sh-vim"] = {
     loaded = true,
     path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\cheat.sh-vim"
-  },
-  ["colorbuddy.nvim"] = {
-    loaded = true,
-    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\colorbuddy.nvim"
   },
   ["completion-nvim"] = {
     loaded = true,
@@ -64,17 +48,17 @@ _G.packer_plugins = {
     loaded = true,
     path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\dracula"
   },
-  gruvbox = {
+  edge = {
     loaded = true,
-    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\gruvbox"
+    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\edge"
   },
   ["gruvbox-material"] = {
     loaded = true,
     path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\gruvbox-material"
   },
-  ["gruvbuddy.nvim"] = {
+  ["hop.nvim"] = {
     loaded = true,
-    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\gruvbuddy.nvim"
+    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\hop.nvim"
   },
   ["markdown-preview.nvim"] = {
     loaded = true,
@@ -95,6 +79,10 @@ _G.packer_plugins = {
   nerdcommenter = {
     loaded = true,
     path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\nerdcommenter"
+  },
+  ["nvim-colorizer.lua"] = {
+    loaded = true,
+    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\nvim-colorizer.lua"
   },
   ["nvim-jdtls"] = {
     loaded = true,
@@ -119,14 +107,6 @@ _G.packer_plugins = {
   ["nvim-web-devicons"] = {
     loaded = true,
     path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\nvim-web-devicons"
-  },
-  ["oceanic-material"] = {
-    loaded = true,
-    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\oceanic-material"
-  },
-  ["onedark.vim"] = {
-    loaded = true,
-    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\onedark.vim"
   },
   ["packer.nvim"] = {
     loaded = true,
@@ -168,10 +148,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\telescope.nvim"
   },
-  ["tender.vim"] = {
-    loaded = true,
-    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\tender.vim"
-  },
   ["vim-anyfold"] = {
     loaded = true,
     path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\vim-anyfold"
@@ -179,10 +155,6 @@ _G.packer_plugins = {
   ["vim-code-dark"] = {
     loaded = true,
     path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\vim-code-dark"
-  },
-  ["vim-deus"] = {
-    loaded = true,
-    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\vim-deus"
   },
   ["vim-dirvish"] = {
     loaded = true,
@@ -192,17 +164,13 @@ _G.packer_plugins = {
     loaded = true,
     path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\vim-fugitive"
   },
-  ["vim-gitgutter"] = {
-    loaded = true,
-    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\vim-gitgutter"
-  },
-  ["vim-monokai-pro"] = {
-    loaded = true,
-    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\vim-monokai-pro"
-  },
   ["vim-rfc"] = {
     loaded = true,
     path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\vim-rfc"
+  },
+  ["vim-signify"] = {
+    loaded = true,
+    path = "C:\\Users\\NunoDavid\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\vim-signify"
   },
   ["vim-sleuth"] = {
     loaded = true,

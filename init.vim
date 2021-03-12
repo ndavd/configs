@@ -26,11 +26,8 @@ let mapleader = ' '
 " --- Enable 256 color support ------------------------------------------"
 set termguicolors
 
-" --- Set colorscheme ---------------------------------------------------"
-colorscheme codedark
-set background=dark
-
 " --- Disable recommended styles ----------------------------------------"
+" Be a round peg in a squared hole
 let g:python_recommended_style = 0
 let g:rust_recommended_style = 0
 
@@ -119,12 +116,20 @@ augroup END
 let base16colorspace=256  " Access colors present in 256 colorspace
 
 " --- For WebDevicons ---------------------------------------------------"
+" Load webdevicons config
+lua require('webdevicons_config').my_setup()
 " Update filetype icon highlight
 lua require('webdevicons_config').make_hl()
 
+" --- For Colorizer -----------------------------------------------------"
+nnoremap <silent><leader>co :ColorizerToggle<CR>
+
 " --- For Dirvish -------------------------------------------------------"
-au FileType dirvish execute("setl stl=".escape("%f%<%=dirvish   ", ' '))
 nnoremap <silent><leader>d :Dirvish<CR>
+
+" --- For Hop.nvim ------------------------------------------------------"
+noremap <silent>,w <cmd>HopWord<CR>
+noremap <silent>,c <cmd>HopChar2<CR>
 
 " --- For ScrollView ----------------------------------------------------"
 let g:scrollview_on_startup = 0
@@ -211,7 +216,6 @@ autocmd VimResized * if &ft=='startify' && winwidth(0)>=64
       \| call StartifyUpdateCentering()
       \| call startify#insane_in_the_membrane(0)
       \| endif
-autocmd User StartifyReady setl stl=%=\\ \\ startify\ \%=
 function StartifyReLaunch()
   call StartifyUpdateQuote()
   call StartifyUpdateCentering()
@@ -231,6 +235,12 @@ if exists('g:scrollview_on_startup')
 else
   nnoremap <silent><leader>v :Vista!!<CR>
 endif
+
+" --- For signify -------------------------------------------------------"
+let s:signify_symbol = '▌' " ▊
+let g:signify_sign_add = s:signify_symbol
+let g:signify_sign_change = s:signify_symbol
+let g:signify_sign_delete = s:signify_symbol
 
 " --- For Luapad --------------------------------------------------------"
 lua require('luapad_config')
@@ -263,13 +273,6 @@ endif
 
 " --- For vim-sleuth ----------------------------------------------------"
 let g:sleuth_automatic = 0
-
-" --- For gitgutter -----------------------------------------------------"
-let g:gitgutter_map_keys = 0
-
-" --- For better-escape -------------------------------------------------"
-let g:better_escape_interval = 200
-let g:better_escape_shortcut = 'kj'
 
 " --- For nvim-treesitter -----------------------------------------------"
 lua require('treesitter_config')
@@ -346,60 +349,6 @@ let g:completion_matching_strategy_list =
       \ ['exact', 'substring', 'fuzzy', 'all']
 
 " -----------------------------------------------------------------------"
-" ---------------- NVIM KEYMAPS -----------------------------------------"
-" -----------------------------------------------------------------------"
-" --- Write files and source --------------------------------------------"
-nnoremap <leader>w :w<CR>
-nnoremap <leader>ss :so $MYVIMRC<CR>
+finish
 
-" --- Lcd into current file directory -----------------------------------"
-command Cdhere lcd %:p:h
-
-" --- Window handling ---------------------------------------------------"
-nnoremap <silent><leader>h :wincmd h<CR>
-nnoremap <silent><leader>j :wincmd j<CR>
-nnoremap <silent><leader>k :wincmd k<CR>
-nnoremap <silent><leader>l :wincmd l<CR>
-nnoremap <silent><leader>x :wincmd c<CR>
-nnoremap <silent><leader>r :wincmd r<CR>
-nnoremap <silent><leader>T :wincmd T<CR>
-nnoremap <silent><leader>= :wincmd =<CR>
-nnoremap <silent><leader>o :wincmd o<CR>
-nnoremap <silent><leader>sv :wincmd v<CR>
-nnoremap <silent><leader>sh :wincmd s<CR>
-" Split Resizing
-nnoremap <silent> <leader>+ :vertical resize +5<CR>
-nnoremap <silent> <leader>- :vertical resize -5<CR>
-nnoremap <silent> <A-+> :resize +2<CR>
-nnoremap <silent> <A--> :resize -2<CR>
-
-" --- Scroll up/down with keys ------------------------------------------"
-nnoremap <silent><C-j> <C-e>
-nnoremap <silent><C-k> <C-y>
-
-" --- Scroll left/right with keys ---------------------------------------"
-nnoremap <C-h> 3zh
-nnoremap <C-l> 3zl
-
-" --- Move lines up/down ------------------------------------------------"
-nnoremap <silent><A-s> :m .+1<CR>==
-nnoremap <silent><A-w> :m .-2<CR>==
-inoremap <silent><A-s> <Esc>:m .+1<CR>==gi
-inoremap <silent><A-w> <Esc>:m .-2<CR>==gi
-vnoremap <silent><A-s> :m '>+1<CR>gv=gv
-vnoremap <silent><A-w> :m '<-2<CR>gv=gv
-
-" --- Tab handling ------------------------------------------------------"
-nnoremap <silent><leader>tc :tabc<CR>
-nnoremap <silent><leader>tn :tabn<CR>
-nnoremap <silent><leader>tp :tabp<CR>
-
-" --- Activate/Deactivate Spelllang to EN -------------------------------"
-nnoremap <leader>p :setlocal spell spelllang=en_us<CR>
-nnoremap <leader>pt :setlocal spell spelllang=pt_pt<CR>
-nnoremap <leader><S-p> :set nospell<CR>
-
-" --- Map to terminal ---------------------------------------------------"
-nnoremap <silent><leader>b <C-w>s<C-w>j:terminal<CR>i
-
-" -----------------------------------------------------------------------"
+A GB of RAM should do the trick.

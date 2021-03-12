@@ -139,7 +139,6 @@ require'lspconfig'.sumneko_lua.setup{
           [vim.fn.expand('$VIMRUNTIME/lua')] = true,
           [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
         },
-        preloadFileSize = 1000,
       },
     },
   },

@@ -3,7 +3,11 @@ local actions = require('telescope.actions')
 
 require('telescope').setup{
   defaults = {
-    mappings = { i = { ['<esc>'] = actions.close, } },
+    mappings = {
+      i = {
+        ['<esc>'] = actions.close,
+      }
+    },
     vimgrep_arguments = {
       'rg',
       '--color=never',
@@ -76,14 +80,14 @@ out.search_config = function()
 end
 
 -- Git branches
---out.git_branches = function()
-  --require('telescope.builtin').git_branches({
-    --attach_mappings = function(_, map)
-      --map('i', '<c-d>', actions.git_delete_branch)
-      --map('n', '<c-d>', actions.git_delete_branch)
-      --return true
-    --end
-  --})
---end
+out.git_branches = function()
+  require('telescope.builtin').git_branches({
+    attach_mappings = function(_, map)
+      map('i', '<c-e>', actions.git_delete_branch)
+      map('n', '<c-e>', actions.git_delete_branch)
+      return true
+    end
+  })
+end
 
 return out
