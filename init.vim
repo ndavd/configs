@@ -351,4 +351,4 @@ let g:completion_matching_strategy_list =
 " -----------------------------------------------------------------------"
 finish
 
-A GB of RAM should do the trick.
+Impulse. Response. Fluid. Imperfect. Patterned. Chaotic.
