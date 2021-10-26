@@ -1,4 +1,5 @@
-# configs
+ # NO LONGER USING WINDOWS! MOVED TO [DOTFILES](https://github.com/ndav1d/dotfiles)!
+ # configs
 -- For neovim and alacritty --
 
 **soon**: `init.lua`
